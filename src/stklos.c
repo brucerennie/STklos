@@ -1,7 +1,7 @@
 /*
  * stklos.c     -- STklos interpreter main function
  *
- * Copyright © 1999-2025 Erick Gallesio <eg@stklos.net>
+ * Copyright © 1999-2026 Erick Gallesio <eg@stklos.net>
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 #include "stklos.h"
 #include <langinfo.h>
 #include <strings.h>
-#include "gnu-getopt.h"
+#include <getopt.h>
 
 #define ADD_OPTION(o, k)                                     do{\
   if (*o) options = STk_key_set(options,                        \
@@ -82,7 +82,7 @@ static struct option long_options [] =
   {"file",                   required_argument, NULL, 'f'},
   {"prepend-load-path",      required_argument, NULL, 'I'},
   {"append-load-path",       required_argument, NULL, 'A'},
-  {"includes-use-load-path", no_argument,  NULL, 'y'},
+  {"includes-use-load-path", no_argument,       NULL, 'y'},
   {"compiler-flags",         required_argument, NULL, 'F'},
   {"load",                   required_argument, NULL, 'l'},
   {"execute",                required_argument, NULL, 'e'},
