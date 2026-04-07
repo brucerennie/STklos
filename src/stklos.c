@@ -160,7 +160,12 @@ static int process_program_arguments(int argc, char *argv[])
   int c;
 
   for ( ; ; ) {
-    c = getopt_long(argc, argv, "+qQidnvVhcF:f:l:e:b:s:D:I:A:u:", long_options, NULL);
+    /* The '+' sign below indicates that we want to be POSIXLY_CORRECT (that is that
+     * we cannot mix options and non option in the arguments).
+     * NOTE: All the subsequent uses of getopt_long (i.e. the Scheme ones) will be
+     * POSIXLY_CORRECT with GNU getopt_long
+     */
+    c = getopt_long(argc, argv, "+qQidnvVhcF:f:l:e:b:s:D:I:A:u:", long_options,NULL);
     if (c == -1) break;
 
     switch (c) {
