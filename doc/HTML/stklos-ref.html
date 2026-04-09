@@ -16034,7 +16034,7 @@ list). Following arguments are clauses. Clauses are described later.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>A string clause is used to build the  help associated to the command.
+<p>A string clause is used to build the help associated to the command.
 A list clause must follow the syntax describes an option. The
 <code>&lt;expr&gt;</code>s associated to a list clauses are executed when the option
 is recognized.
@@ -16047,10 +16047,14 @@ the symbol given after <code>:arg</code> will be bound to the value of the optio
 argument when the corresponding `&lt;expr&gt;`s will be executed.</p>
 </div>
 <div class="paragraph">
-<p>In an <code>else</code> clause two symbols are bound:</p>
+<p>In an <code>else</code> clause three symbols are bound:</p>
 </div>
 <div class="ulist">
 <ul>
+<li>
+<p>the symbol <code>program-name</code> denotes the name used to launch the program (that
+is the first element of the list <code>&lt;args&gt;</code>).</p>
+</li>
 <li>
 <p>the symbol <code>option-error</code> is bound to the error message (a string) when an
 an argument option is missing or an option is incorrect. This symbol is bound
@@ -16062,6 +16066,19 @@ options.</p>
 </li>
 </ul>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The sequence <code>~P</code> in a string clause denotes a string which is the name used
+to launch the Scheme program.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>The following example shows a rather complete usage of the
 <code>parse-arguments</code> form</p>
@@ -16072,7 +16089,7 @@ options.</p>
 
 <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">main</span> <span class="nv">args</span><span class="p">)</span>
   <span class="p">(</span><span class="nf">parse-arguments</span> <span class="nv">args</span>
-     <span class="s">"Usage: foo [options] [parameter ...]"</span>
+     <span class="s">"Usage: ~P [options] [parameter ...]"</span>
      <span class="s">"General options:"</span>
          <span class="p">((</span><span class="s">"verbose"</span> <span class="nv">:alternate</span> <span class="s">"v"</span> <span class="nv">:help</span> <span class="s">"be more verbose"</span><span class="p">)</span>
            <span class="p">(</span><span class="nf">printf</span> <span class="s">"Seen the verbose option~%"</span><span class="p">))</span>
@@ -16081,7 +16098,7 @@ options.</p>
          <span class="p">((</span><span class="s">"s"</span> <span class="nv">:help</span> <span class="s">"a short option alone"</span><span class="p">)</span>
            <span class="p">(</span><span class="nf">printf</span> <span class="s">"Seen the short option~%"</span><span class="p">))</span>
      <span class="s">"File options:"</span>
-         <span class="p">((</span><span class="s">"input"</span> <span class="nv">:alternate</span> <span class="s">"f"</span> <span class="nv">:arg</span> <span class="nv">file</span>
+         <span class="p">((</span><span class="s">"input"</span> <span class="nv">:alternate</span> <span class="s">"i"</span> <span class="nv">:arg</span> <span class="nv">file</span>
                    <span class="nv">:help</span> <span class="s">"use &lt;file&gt; as input"</span><span class="p">)</span>
            <span class="p">(</span><span class="nf">printf</span> <span class="s">"Seen the input option with ~S argument~%"</span> <span class="nv">file</span><span class="p">))</span>
          <span class="p">((</span><span class="s">"output"</span> <span class="nv">:alternate</span> <span class="s">"o"</span> <span class="nv">:arg</span> <span class="nv">file</span>
@@ -16094,7 +16111,7 @@ options.</p>
            <span class="p">(</span><span class="nf">exit</span> <span class="mi">1</span><span class="p">))</span>
      <span class="p">(</span><span class="k">else</span>
          <span class="p">(</span><span class="nf">when</span> <span class="nv">option-error</span>
-            <span class="p">(</span><span class="nf">eprintf</span> <span class="s">"~A: ~A~%"</span> <span class="p">(</span><span class="nb">car</span> <span class="nv">args</span><span class="p">)</span> <span class="nv">option-error</span><span class="p">)</span>
+            <span class="p">(</span><span class="nf">eprintf</span> <span class="s">"~A: ~A~%"</span> <span class="nv">program-name</span> <span class="nv">option-error</span><span class="p">)</span>
             <span class="p">(</span><span class="nf">eprintf</span> <span class="s">"Use the '--help' for more information~%"</span><span class="p">)</span>
             <span class="p">(</span><span class="nf">exit</span> <span class="mi">1</span><span class="p">))</span>
          <span class="p">(</span><span class="nf">printf</span> <span class="s">"All options parsed. Remaining arguments are ~S~%"</span>
@@ -16122,6 +16139,23 @@ All options parsed. Remaining arguments are ("arg1" "arg2")</code></pre>
 </div>
 </div>
 <div class="paragraph">
+<p>The following program invocation</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="scheme"><span class="nv">foo</span> <span class="nv">--not-an-option</span> <span class="nv">A</span> <span class="nv">B</span> <span class="nv">C</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>produces the following output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>foo: unrecognized option '--not-an-option'
+Use the '--help' for more information</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>Finally, the program invocation</p>
 </div>
 <div class="listingblock">
@@ -16136,14 +16170,14 @@ All options parsed. Remaining arguments are ("arg1" "arg2")</code></pre>
 <div class="content">
 <pre class="rouge highlight"><code>Usage: foo [options] [parameter ...]
 General options:
-  --verbose, -v               be more verbose
-  --long                      a long option alone
-  -s                          a short option alone
+  -v, --verbose               be more verbose
+      --long                  a long option alone
+      -s                      a short option alone
 File options:
-  --input=&lt;file&gt;, -f &lt;file&gt;   use &lt;file&gt; as input
-  --output=&lt;file&gt;, -o &lt;file&gt;  use &lt;file&gt; as output
+  -f &lt;file&gt;, --input=&lt;file&gt;   use &lt;file&gt; as input
+  -o &lt;file&gt;, --output=&lt;file&gt;  use &lt;file&gt; as output
 Misc:
-  --help, -h                  provides help for the command</code></pre>
+  -h, --help                  provides help for the command</code></pre>
 </div>
 </div>
 <div class="paragraph">
