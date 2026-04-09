@@ -409,7 +409,7 @@ DEFINE_PRIMITIVE("address-ref", address_ref, subr1, (SCM object))
 static int Argc;                     // FIXME? This code is not thread safe.
 static char *optstring;              // since we use global variables. However,
 static char **Argv;                  // it will be probably used only before
-static struct option *long_options;  // we are multi-threads. 
+static struct option *long_options;  // we are multi-threads.
 
 
 DEFINE_PRIMITIVE("%initialize-getopt", init_getopt, subr3, (SCM argv, SCM s, SCM v))
@@ -468,6 +468,8 @@ DEFINE_PRIMITIVE("%initialize-getopt", init_getopt, subr3, (SCM argv, SCM s, SCM
   return STk_void;
 }
 
+#define GETOPT_BUFSIZE 500
+
 DEFINE_PRIMITIVE("%getopt", getopt, subr0, (void))
 {
   int  n, longindex;
@@ -482,18 +484,17 @@ DEFINE_PRIMITIVE("%getopt", getopt, subr0, (void))
         while (optind < Argc)
           l = STk_cons(STk_Cstring2string(Argv[optind++]), l);
 
-        return STk_cons(MAKE_INT(-1UL), STk_dreverse(l));
+        return LIST2(STk_false, STk_dreverse(l));
       }
     case '?': /* Error or argument missing */
     case ':':
       {
         char *culprit = Argv[optind-1];
-        SCM eport     = STk_current_error_port();
+        char buffer[GETOPT_BUFSIZE];
 
         // Try to display error message with the usual getopt_long format.
         // This format is weird, but it seems to be imposed by POSIX.
         // Warning: This is a bit tricky.
-        STk_fprintf(eport, "%s: ", *Argv);
 
         if (culprit[1] == '-') {
           // User passed a long option
@@ -512,18 +513,20 @@ DEFINE_PRIMITIVE("%getopt", getopt, subr0, (void))
           }
 
           if (longindex > 0)
-            STk_fprintf(eport, "option '--%s' requires an argument\n",
+            snprintf(buffer, GETOPT_BUFSIZE, "option '--%s' requires an argument",
                        long_options[longindex].name);
           else
-            STk_fprintf(eport, "unrecognized option '--%s'\n", culprit);
-        } else {
+            snprintf(buffer, GETOPT_BUFSIZE, "unrecognized option '--%s'",culprit);
+        }
+        else {
           // User passed a short option
           if (strchr(optstring, optopt))
-            STk_fprintf(eport, "option requires an argument -- '%c'\n", optopt);
+            snprintf(buffer, GETOPT_BUFSIZE, "option requires an argument -- '%c'",
+                     optopt);
           else
-            STk_fprintf(eport, "invalid option -- '%c'\n", optopt);
+            snprintf(buffer, GETOPT_BUFSIZE, "invalid option -- '%c'", optopt);
         }
-        return STk_false;
+        return LIST2(STk_Cstring2string(buffer), STk_nil);
       }
     case 0  : /* Long option */
       {

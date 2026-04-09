@@ -343,7 +343,7 @@ doc>
                                    res))
                             ((eq? (caar l) 'else)
                              (Loop (cdr l)
-                                   (cons `(lambda (other-arguments)
+                                   (cons `(lambda (error-message other-arguments)
                                             (void) ,@(cdar l))
                                          res)))
                             (else (let ((name (key-get (cdaar l) :arg (gensym))))
@@ -355,25 +355,31 @@ doc>
      (%initialize-getopt ,argv ,(car opts) ',(list->vector (cadr opts)))
 
      (let ,Loop ((x (%getopt)))
+          ;; %getopt result is a list of 2 elements
+          ;; The first argument of the list is
+          ;;  - a character if we have a short option (and eventually its arg)
+          ;;  - an int which is the index of the long option
+          ;;  - a string when an optional param is missing or an incorrect option
+          ;;  - #f if all the options have been processed
           (cond
-            ((boolean? x) ;; There was an error (already signaled). Treat next opt.
-               (,Loop (%getopt)))
-            ((and (pair? x))
-               (cond
-                 ((char? (car x))
-                    ((vector-ref ,actions (cdr (assq (car x) ,alist))) (cdr x))
-                    (,Loop (%getopt)))
-                 ((>= (car x) 0)
-                     ((vector-ref ,actions (car x)) (cdr x))
-                     (,Loop (%getopt)))
-                 (else
-                    ;; Special case for the ELSE clause (if it exists)
-                    ,(let ((end (last-pair clauses)))
-                       (if (eq? (caar end) 'else)
-                           `((vector-ref ,actions (- (vector-length ,actions) 1))
-                             (cdr x))
-                           '(void)))))))))))
+           ((char? (car x))
+              ((vector-ref ,actions (cdr (assq (car x) ,alist))) (cdr x))
+              (,Loop (%getopt)))
 
+           ((integer? (car x))
+              ((vector-ref ,actions (car x)) (cdr x))
+              (,Loop (%getopt)))
+
+           (else
+              ;; Special case for the ELSE clause (if it exists)
+            ,(let ((end (last-pair clauses)))
+               (if (eq? (caar end) 'else)
+                   ;; We have an else clause
+                   `(apply (vector-ref ,actions
+                                       (- (vector-length ,actions) 1))
+                           x)
+                   ;; No else clause
+                   '(void)))))))))
 )
 
 
