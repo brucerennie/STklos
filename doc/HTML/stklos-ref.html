@@ -16047,8 +16047,20 @@ the symbol given after <code>:arg</code> will be bound to the value of the optio
 argument when the corresponding `&lt;expr&gt;`s will be executed.</p>
 </div>
 <div class="paragraph">
-<p>In an <code>else</code> clause the symbol <code>other-arguments</code> is bound to the
-list of the arguments which are not options.</p>
+<p>In an <code>else</code> clause two symbols are bound:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the symbol <code>option-error</code> is bound to the error message (a string) when an
+an argument option is missing or an option is incorrect. This symbol is bound
+to the false value when there is no error.</p>
+</li>
+<li>
+<p>the symbol <code>other-arguments</code> is bound to the list of the arguments which are not
+options.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>The following example shows a rather complete usage of the
@@ -16081,6 +16093,10 @@ list of the arguments which are not options.</p>
            <span class="p">(</span><span class="nf">arg-usage</span> <span class="p">(</span><span class="nf">current-error-port</span><span class="p">))</span>
            <span class="p">(</span><span class="nf">exit</span> <span class="mi">1</span><span class="p">))</span>
      <span class="p">(</span><span class="k">else</span>
+         <span class="p">(</span><span class="nf">when</span> <span class="nv">option-error</span>
+            <span class="p">(</span><span class="nf">eprintf</span> <span class="s">"~A: ~A~%"</span> <span class="p">(</span><span class="nb">car</span> <span class="nv">args</span><span class="p">)</span> <span class="nv">option-error</span><span class="p">)</span>
+            <span class="p">(</span><span class="nf">eprintf</span> <span class="s">"Use the '--help' for more information~%"</span><span class="p">)</span>
+            <span class="p">(</span><span class="nf">exit</span> <span class="mi">1</span><span class="p">))</span>
          <span class="p">(</span><span class="nf">printf</span> <span class="s">"All options parsed. Remaining arguments are ~S~%"</span>
                  <span class="nv">other-arguments</span><span class="p">))))</span></code></pre>
 </div>

@@ -144,8 +144,13 @@ doc>
  * the symbol given after |:arg| will be bound to the value of the option
  * argument when the corresponding |<expr>|s will be executed.
  *
- * In an |else| clause the symbol |other-arguments| is bound to the
- * list of the arguments which are not options.
+ * In an |else| clause two symbols are bound:
+ *
+ * - the symbol |option-error| is bound to the error message (a string) when an
+ * an argument option is missing or an option is incorrect. This symbol is bound
+ * to the false value when there is no error.
+ * - the symbol |other-arguments| is bound to the list of the arguments which are not
+ * options.
  *
  * The following example shows a rather complete usage of the
  * |parse-arguments| form
@@ -176,6 +181,10 @@ doc>
  *            (arg-usage (current-error-port))
  *            (exit 1))
  *      (else
+ *          (when option-error
+ *             (eprintf "~A: ~A~%" (car args) option-error)
+ *             (eprintf "Use the '--help' for more information~%")
+ *             (exit 1))
  *          (printf "All options parsed. Remaining arguments are ~S~%"
  *                  other-arguments))))
  * @end lisp
@@ -343,7 +352,7 @@ doc>
                                    res))
                             ((eq? (caar l) 'else)
                              (Loop (cdr l)
-                                   (cons `(lambda (error-message other-arguments)
+                                   (cons `(lambda (option-error other-arguments)
                                             (void) ,@(cdar l))
                                          res)))
                             (else (let ((name (key-get (cdaar l) :arg (gensym))))
