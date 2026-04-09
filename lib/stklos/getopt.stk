@@ -40,7 +40,7 @@
  *
 doc>
 |#
-(define (%print-usage port clauses sexpr)
+(define (%print-usage port prog-name clauses sexpr)
   (define (make-line-info l)
     (let ((opt    (car l))
           (help   (key-get (cdr l) :help #f))
@@ -83,9 +83,11 @@ doc>
       ;; Pretty print the options on given port
       (let* ((lines (map (lambda (clause)
                            (cond
-                             ((string? clause)     clause)
+                             ((string? clause)     (regexp-replace "~P"
+                                                                   clause
+                                                                   prog-name))
                              ((pair? (car clause)) (make-line-info (car clause)))
-                             (else                     #f)))
+                             (else                 #f)))
                          clauses))
              (len   (apply max (map (lambda (x)
                                       (if (pair? x) (string-length (car x)) 0))
@@ -132,7 +134,7 @@ doc>
  * <keyword>      => :alternate @pipe :arg @pipe :help
  * ```
  *
- * A string clause is used to build the  help associated to the command.
+ * A string clause is used to build the help associated to the command.
  * A list clause must follow the syntax describes an option. The
  * `|<expr>|`s associated to a list clauses are executed when the option
  * is recognized.
@@ -152,6 +154,9 @@ doc>
  * - the symbol |other-arguments| is bound to the list of the arguments which are not
  * options.
  *
+ * NOTE: The sequence |~P| in a string clause denotes a string which is the name used
+ * to launch the Scheme program.
+ *
  * The following example shows a rather complete usage of the
  * |parse-arguments| form
  *
@@ -160,7 +165,7 @@ doc>
  *
  * (define (main args)
  *   (parse-arguments args
- *      "Usage: foo [options] [parameter ...]"
+ *      "Usage: ~P [options] [parameter ...]"
  *      "General options:"
  *          (("verbose" :alternate "v" :help "be more verbose")
  *            (printf "Seen the verbose option~%"))
@@ -335,12 +340,14 @@ doc>
   (let* ((actions   (gensym "actions"))
          (Loop      (gensym "Loop"))
          (alist     (gensym "alist"))
+         (progname  (gensym "progname"))
          (opts      (make-getopt-parameters clauses))
          (clauses*  (map (lambda (z) (if (pair? z) (list (car z)) z))
                           clauses)))  ;; clauses without code (=> shorter constant)
 
-  `(let* ((arg-usage (lambda (port :optional sexpr)
-                       (%print-usage port ',clauses* sexpr)))
+  `(let* ((,progname (car ,argv))
+          (arg-usage (lambda (port :optional sexpr)
+                       (%print-usage port ,progname ',clauses* sexpr)))
           (,alist    ',(caddr opts))
           (,actions  (vector
                       ,@(let Loop ((l clauses) (res '()))
