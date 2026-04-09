@@ -2,7 +2,7 @@
 ;;;;
 ;;;; stklos-pp.stk         -- A simple STklos preprocessor
 ;;;;
-;;;; Copyright © 2022-2023 Erick Gallesio <eg@stklos.net>
+;;;; Copyright © 2022-2026 Erick Gallesio <eg@stklos.net>
 ;;;;
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -38,7 +38,7 @@
 (define (main args)
   (let ((output "-"))
     (parse-arguments args
-      "Usage: stklos-pp [options] document"
+      "Usage: ~P [options] document"
       "A simple preprocessor for text documents"
       ""
       (("define" :alternate "D" :arg str :help "Define new metadata")
@@ -64,6 +64,10 @@
       "  stklos-pp                              preprocess stdin, output goes to stdout"
 
       (else
+       (when option-error
+         (eprintf "~A: ~A~%" program-name option-error)
+         (arg-usage (current-error-port))
+         (exit 1))
        (case (length other-arguments)
          ((0)                ;; No argument: use stdin
           (translate "-" output)
