@@ -1,7 +1,7 @@
 /*                                                      -*- coding: utf-8 -*-
  * m i s c . c          -- Misc. functions
  *
- * Copyright © 2000-2025 Erick Gallesio <eg@stklos.net>
+ * Copyright © 2000-2026 Erick Gallesio <eg@stklos.net>
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,11 +24,10 @@
  */
 
 #include "stklos.h"
-#include "gnu-getopt.h"
 #include "git-info.h"
 #include "vm.h"
 #include <limits.h>
-
+#include <getopt.h>
 
 #ifdef STK_DEBUG
   #ifdef HAVE_BACKTRACE
@@ -407,20 +406,20 @@ DEFINE_PRIMITIVE("address-ref", address_ref, subr1, (SCM object))
  *                      Argument parsing
  *
 \*===========================================================================*/
-static int Argc;
-static char * optstring;
-static char **Argv;
-static struct option *long_options;
+static int Argc;                     // FIXME? This code is not thread safe.
+static char *optstring;              // since we use global variables. However,
+static char **Argv;                  // it will be probably used only before
+static struct option *long_options;  // we are multi-threads.
 
 
 DEFINE_PRIMITIVE("%initialize-getopt", init_getopt, subr3, (SCM argv, SCM s, SCM v))
 {
   int i, len;
 
-  STk_start_getopt_from_scheme();
-  optind = 1;    /* Initialize optind, since it has already been used
-                  * by ourselves before initializing the VM.
-                  */
+  optind = 1;    // Initialize optind, since it has already been used
+                 // by ourselves before initializing the VM.
+  opterr = 0;    // Tell to getopt_long to not display errors.
+                 // We'll do the job ourselves if needed
 
   /*
    * Argv processing
@@ -469,6 +468,8 @@ DEFINE_PRIMITIVE("%initialize-getopt", init_getopt, subr3, (SCM argv, SCM s, SCM
   return STk_void;
 }
 
+#define GETOPT_BUFSIZE 500
+
 DEFINE_PRIMITIVE("%getopt", getopt, subr0, (void))
 {
   int  n, longindex;
@@ -483,10 +484,50 @@ DEFINE_PRIMITIVE("%getopt", getopt, subr0, (void))
         while (optind < Argc)
           l = STk_cons(STk_Cstring2string(Argv[optind++]), l);
 
-        return STk_cons(MAKE_INT(-1UL), STk_dreverse(l));
+        return LIST2(STk_false, STk_dreverse(l));
       }
     case '?': /* Error or argument missing */
-    case ':': return STk_false;
+    case ':':
+      {
+        char *culprit = Argv[optind-1];
+        char buffer[GETOPT_BUFSIZE];
+
+        // Try to display error message with the usual getopt_long format.
+        // This format is weird, but it seems to be imposed by POSIX.
+        // Warning: This is a bit tricky.
+
+        if (culprit[1] == '-') {
+          // User passed a long option
+          culprit   += 2;                   // skip '--'
+          n          = strlen(culprit);
+          longindex  = -1;
+
+          // Try to see if culprit is a prefix of a known long option. If this
+          // the case, we have a valid option that needs an option which was
+          // absent. Otherwise, the option is invalid
+          for (int i = 0; long_options[i].name; i++) {
+            if (strncmp(culprit, long_options[i].name, strlen(culprit)) == 0) {
+              longindex = i;
+              break;
+            }
+          }
+
+          if (longindex > 0)
+            snprintf(buffer, GETOPT_BUFSIZE, "option '--%s' requires an argument",
+                       long_options[longindex].name);
+          else
+            snprintf(buffer, GETOPT_BUFSIZE, "unrecognized option '--%s'",culprit);
+        }
+        else {
+          // User passed a short option
+          if (strchr(optstring, optopt))
+            snprintf(buffer, GETOPT_BUFSIZE, "option requires an argument -- '%c'",
+                     optopt);
+          else
+            snprintf(buffer, GETOPT_BUFSIZE, "invalid option -- '%c'", optopt);
+        }
+        return LIST2(STk_Cstring2string(buffer), STk_nil);
+      }
     case 0  : /* Long option */
       {
         SCM str = (optarg)? STk_Cstring2string(optarg): STk_void;
@@ -499,6 +540,7 @@ DEFINE_PRIMITIVE("%getopt", getopt, subr0, (void))
       }
   }
 }
+
 
 /*===========================================================================*\
  *

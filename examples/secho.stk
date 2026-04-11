@@ -1,7 +1,7 @@
 ;;;;
 ;;;; secho.stk  -- a simple /bin/echo in Scheme
 ;;;;
-;;;; Copyright © 2009-2020 Erick Gallesio - Polytech'Nice-Sophia <eg@unice.fr>
+;;;; Copyright © 2009-2026 Erick Gallesio <eg@stklos.net>
 ;;;;
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -31,11 +31,11 @@
         (out       (current-output-port)))
 
     (parse-arguments argv
-       "Usage: secho [options] [parameter ...]"
+       "Usage: ~P [options] [parameter ...]"
        "Available options"
        (("no-newline" :alternate "n" :help "do not output the trailing newline")
          (set! output-nl #f))
-       (("error-port" :alternate "2" :help "Use the error port for the outputs")
+       (("error-port" :alternate "2" :help "output lines to the error port")
          (set! out (current-error-port)))
        "Other options"
        (("help" :alternate "h" :help "display this help and exit")
@@ -45,6 +45,13 @@
         (printf "~a version ~a\n" (program-name) *version*)
         (exit 0))
        (else
+        (when option-error
+          ;; we had an unknow option
+          (eprintf "~A: ~A~%" program-name option-error)
+          (arg-usage (current-error-port))
+          (exit 1))
+
+        ;; Everything is OK, display the arguments 
         (for-each  (lambda (x)
                      (display x out)
                      (display #\space out))

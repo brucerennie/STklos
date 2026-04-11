@@ -1,7 +1,7 @@
 /*
  * stklos.c     -- STklos interpreter main function
  *
- * Copyright © 1999-2025 Erick Gallesio <eg@stklos.net>
+ * Copyright © 1999-2026 Erick Gallesio <eg@stklos.net>
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 #include "stklos.h"
 #include <langinfo.h>
 #include <strings.h>
-#include "gnu-getopt.h"
+#include <getopt.h>
 
 #define ADD_OPTION(o, k)                                     do{\
   if (*o) options = STk_key_set(options,                        \
@@ -82,7 +82,7 @@ static struct option long_options [] =
   {"file",                   required_argument, NULL, 'f'},
   {"prepend-load-path",      required_argument, NULL, 'I'},
   {"append-load-path",       required_argument, NULL, 'A'},
-  {"includes-use-load-path", no_argument,  NULL, 'y'},
+  {"includes-use-load-path", no_argument,       NULL, 'y'},
   {"compiler-flags",         required_argument, NULL, 'F'},
   {"load",                   required_argument, NULL, 'l'},
   {"execute",                required_argument, NULL, 'e'},
@@ -160,7 +160,12 @@ static int process_program_arguments(int argc, char *argv[])
   int c;
 
   for ( ; ; ) {
-    c = getopt_long(argc, argv, "+qQidnvVhcF:f:l:e:b:s:D:I:A:u:", long_options, NULL);
+    /* The '+' sign below indicates that we want to be POSIXLY_CORRECT (that is that
+     * we cannot mix options and non option in the arguments).
+     * NOTE: All the subsequent uses of getopt_long (i.e. the Scheme ones) will be
+     * POSIXLY_CORRECT with GNU getopt_long
+     */
+    c = getopt_long(argc, argv, "+qQidnvVhcF:f:l:e:b:s:D:I:A:u:", long_options,NULL);
     if (c == -1) break;
 
     switch (c) {

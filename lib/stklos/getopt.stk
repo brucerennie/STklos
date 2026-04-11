@@ -1,7 +1,7 @@
 ;;;;
 ;;;; getopt.stk                         -- getopt
 ;;;;
-;;;; Copyright © 2001-2025 Erick Gallesio <eg@stklos.net>
+;;;; Copyright © 2001-2026 Erick Gallesio <eg@stklos.net>
 ;;;;
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -40,7 +40,7 @@
  *
 doc>
 |#
-(define (%print-usage port clauses sexpr)
+(define (%print-usage port prog-name clauses sexpr)
   (define (make-line-info l)
     (let ((opt    (car l))
           (help   (key-get (cdr l) :help #f))
@@ -83,9 +83,11 @@ doc>
       ;; Pretty print the options on given port
       (let* ((lines (map (lambda (clause)
                            (cond
-                             ((string? clause)     clause)
+                             ((string? clause)     (regexp-replace "~P"
+                                                                   clause
+                                                                   prog-name))
                              ((pair? (car clause)) (make-line-info (car clause)))
-                             (else                     #f)))
+                             (else                 #f)))
                          clauses))
              (len   (apply max (map (lambda (x)
                                       (if (pair? x) (string-length (car x)) 0))
@@ -123,12 +125,6 @@ doc>
  * given to the program (comprising the program name in the CAR of this
  * list). Following arguments are clauses. Clauses are described later.
  *
- * By  default, |parse-arguments| permutes the contents of (a copy) of
- * the arguments as it scans, so that eventually all the non-options are
- * at the end. However, if the shell environment variable |POSIXLY_CORRECT|
- * is set, then option processing stops as soon as a non-option argument
- * is encountered.
- *
  * A clause must follow the syntax:
  * ```
  * <clause>       => string @pipe <list-clause>
@@ -138,7 +134,7 @@ doc>
  * <keyword>      => :alternate @pipe :arg @pipe :help
  * ```
  *
- * A string clause is used to build the  help associated to the command.
+ * A string clause is used to build the help associated to the command.
  * A list clause must follow the syntax describes an option. The
  * `|<expr>|`s associated to a list clauses are executed when the option
  * is recognized.
@@ -150,8 +146,18 @@ doc>
  * the symbol given after |:arg| will be bound to the value of the option
  * argument when the corresponding |<expr>|s will be executed.
  *
- * In an |else| clause the symbol |other-arguments| is bound to the
- * list of the arguments which are not options.
+ * In an |else| clause three symbols are bound:
+ *
+ * - the symbol |program-name| denotes the name used to launch the program (that
+ *  is the first element of the list |<args>|).
+ * - the symbol |option-error| is bound to the error message (a string) when an
+ * an argument option is missing or an option is incorrect. This symbol is bound
+ * to the false value when there is no error.
+ * - the symbol |other-arguments| is bound to the list of the arguments which are not
+ * options.
+ *
+ * NOTE: The sequence |~P| in a string clause denotes a string which is the name used
+ * to launch the Scheme program.
  *
  * The following example shows a rather complete usage of the
  * |parse-arguments| form
@@ -161,7 +167,7 @@ doc>
  *
  * (define (main args)
  *   (parse-arguments args
- *      "Usage: foo [options] [parameter ...]"
+ *      "Usage: ~P [options] [parameter ...]"
  *      "General options:"
  *          (("verbose" :alternate "v" :help "be more verbose")
  *            (printf "Seen the verbose option~%"))
@@ -170,7 +176,7 @@ doc>
  *          (("s" :help "a short option alone")
  *            (printf "Seen the short option~%"))
  *      "File options:"
- *          (("input" :alternate "f" :arg file
+ *          (("input" :alternate "i" :arg file
  *                    :help "use <file> as input")
  *            (printf "Seen the input option with ~S argument~%" file))
  *          (("output" :alternate "o" :arg file
@@ -182,6 +188,10 @@ doc>
  *            (arg-usage (current-error-port))
  *            (exit 1))
  *      (else
+ *          (when option-error
+ *             (eprintf "~A: ~A~%" program-name option-error)
+ *             (eprintf "Use the '--help' for more information~%")
+ *             (exit 1))
  *          (printf "All options parsed. Remaining arguments are ~S~%"
  *                  other-arguments))))
  * @end lisp
@@ -200,6 +210,17 @@ doc>
  * All options parsed. Remaining arguments are ("arg1" "arg2")
  * ```
  *
+ * The following program invocation
+ * @lisp
+ * foo --not-an-option A B C
+ * @end lisp
+ *
+ * produces the following output
+ * ```
+ * foo: unrecognized option '--not-an-option'
+ * Use the '--help' for more information
+ * ```
+ *
  * Finally, the program invocation
  * @lisp
  * foo --help
@@ -208,14 +229,14 @@ doc>
  * ```
  * Usage: foo [options] [parameter ...]
  * General options:
- *   --verbose, -v               be more verbose
- *   --long                      a long option alone
- *   -s                          a short option alone
+ *   -v, --verbose               be more verbose
+ *       --long                  a long option alone
+ *       -s                      a short option alone
  * File options:
- *   --input=<file>, -f <file>   use <file> as input
- *   --output=<file>, -o <file>  use <file> as output
+ *   -f <file>, --input=<file>   use <file> as input
+ *   -o <file>, --output=<file>  use <file> as output
  * Misc:
- *   --help, -h                  provides help for the command
+ *   -h, --help                  provides help for the command
  * ```
  *
  * **Notes:**
@@ -332,12 +353,14 @@ doc>
   (let* ((actions   (gensym "actions"))
          (Loop      (gensym "Loop"))
          (alist     (gensym "alist"))
+         (progname  (gensym "progname"))
          (opts      (make-getopt-parameters clauses))
          (clauses*  (map (lambda (z) (if (pair? z) (list (car z)) z))
                           clauses)))  ;; clauses without code (=> shorter constant)
 
-  `(let* ((arg-usage (lambda (port :optional sexpr)
-                       (%print-usage port ',clauses* sexpr)))
+  `(let* ((,progname (car ,argv))
+          (arg-usage (lambda (port :optional sexpr)
+                       (%print-usage port ,progname ',clauses* sexpr)))
           (,alist    ',(caddr opts))
           (,actions  (vector
                       ,@(let Loop ((l clauses) (res '()))
@@ -349,7 +372,9 @@ doc>
                                    res))
                             ((eq? (caar l) 'else)
                              (Loop (cdr l)
-                                   (cons `(lambda (other-arguments)
+                                   (cons `(lambda (program-name
+                                              option-error
+                                              other-arguments)
                                             (void) ,@(cdar l))
                                          res)))
                             (else (let ((name (key-get (cdaar l) :arg (gensym))))
@@ -361,25 +386,31 @@ doc>
      (%initialize-getopt ,argv ,(car opts) ',(list->vector (cadr opts)))
 
      (let ,Loop ((x (%getopt)))
+          ;; %getopt result is a list of 2 elements
+          ;; The first argument of the list is
+          ;;  - a character if we have a short option (and eventually its arg)
+          ;;  - an int which is the index of the long option
+          ;;  - a string when an optional param is missing or an incorrect option
+          ;;  - #f if all the options have been processed
           (cond
-            ((boolean? x) ;; There was an error (already signaled). Treat next opt.
-               (,Loop (%getopt)))
-            ((and (pair? x))
-               (cond
-                 ((char? (car x))
-                    ((vector-ref ,actions (cdr (assq (car x) ,alist))) (cdr x))
-                    (,Loop (%getopt)))
-                 ((>= (car x) 0)
-                     ((vector-ref ,actions (car x)) (cdr x))
-                     (,Loop (%getopt)))
-                 (else
-                    ;; Special case for the ELSE clause (if it exists)
-                    ,(let ((end (last-pair clauses)))
-                       (if (eq? (caar end) 'else)
-                           `((vector-ref ,actions (- (vector-length ,actions) 1))
-                             (cdr x))
-                           '(void)))))))))))
+           ((char? (car x))
+              ((vector-ref ,actions (cdr (assq (car x) ,alist))) (cdr x))
+              (,Loop (%getopt)))
 
+           ((integer? (car x))
+              ((vector-ref ,actions (car x)) (cdr x))
+              (,Loop (%getopt)))
+
+           (else
+              ;; Special case for the ELSE clause (if it exists)
+            ,(let ((end (last-pair clauses)))
+               (if (eq? (caar end) 'else)
+                   ;; We have an else clause
+                   `(apply (vector-ref ,actions
+                                       (- (vector-length ,actions) 1))
+                           ,progname x)
+                   ;; No else clause
+                   '(void)))))))))
 )
 
 
