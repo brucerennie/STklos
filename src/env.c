@@ -28,7 +28,7 @@
 #include "hash.h"
 #include "vm.h"
 #include "thread-common.h"
-#include <ctype.h>
+
 
 /*===========================================================================* \
  *
@@ -215,48 +215,18 @@ static SCM make_export_list(SCM symbols)
 }
 
 
-static int check_srfi_261(SCM tmp) {
-  SCM first = CAR(tmp);
-  SCM second = CAR(CDR(tmp));
+static const char* normalize_srfi261_library_name(SCM libname)
+{
+  const char *str = SYMBOL_PNAME(libname); // We are sure libname is a symbol
+  char *end;
 
-  /* Second must be a symbol: */
-  if (!SYMBOLP(second)) return 0;
-
-  /* First must be "srfi": */
-  if(strcmp(SYMBOL_PNAME(first), "srfi")) return 0;
-
-  const char *str = SYMBOL_PNAME(second);
-  int len = strlen(str);
-
-  /* Check if 2nd symbol has name "srfi-N".
-     This is a symbol name, so we only need  to
-     check if the prefix is 'srfi-' and if everything
-     after that is digits. */
-
-  if (len < 6 ||                    // At least "srfi-N"
-      strncmp(str,"srfi-", 5) != 0) // "srfi-" prefix
-    return 0;
-
-  for (int i=5; i<len; i++)             // and all digits after that!
-    if (!isdigit(str[i]))
-      return 0;
-
-  return 1;
+  if (strncmp(str, "srfi-", 5) == 0 && strtol(str+5, &end, 10) && !*end)
+    /* libname is of the form srfi-1234 return "1234" */
+    return str+5;
+  else
+    return str;
 }
 
-static int remove_srfi_prefix(SCM s) {
-  /* From "(srfi srfi-N)" extract N, so as to implement library
-     names as per SRFI-261.
-
-     Input: (srfi srfi-1234)
-     Output: "srfi/1234"
-     This is to comply with SRFI-261   */
-  const char *name = SYMBOL_PNAME(s);
-  int len = strlen(name) ;
-  int i = len - 1;
-  while (i >= 0 && isdigit(name[i])) i--;
-  return atoi(&name[i + 1]);
-}
 
 static SCM normalize_library_name(SCM obj) /* return a library name as a symbol */
 {
@@ -265,16 +235,11 @@ static SCM normalize_library_name(SCM obj) /* return a library name as a symbol 
   else if (CONSP(obj) && STk_int_length(obj) > 0) { /* (list? obj) is true */
     SCM res = STk_open_output_string();
 
-    SCM second = STk_nil;
-    if (STk_int_length(obj) == 2)  // exactly 2, we want "(srfi srfi-N)"  only!
-      second = CDR(obj);
-
-    if (CONSP(second)             &&
-        SYMBOLP(CAR(second))      &&  // second must be a symbol!
-        check_srfi_261(obj)) {
-      STk_fprintf(res, "srfi/");
-      int srfi_number = remove_srfi_prefix(CAR(CDR(obj)));
-      STk_fprintf(res, "%d", srfi_number);
+    /* See if obj is of the form (srfi xxxx) */
+    if (SYMBOLP(CAR(obj)) && strcmp(SYMBOL_PNAME(CAR(obj)), "srfi") == 0 &&
+        SYMBOLP(CAR(CDR(obj))) &&
+        NULLP(CDR(CDR(obj)))) {
+      STk_fprintf(res, "srfi/%s",normalize_srfi261_library_name(CAR(CDR(obj))));
     } else {
       for (SCM tmp = obj; !NULLP(tmp); tmp = CDR(tmp)) {
         SCM head = CAR(tmp);
