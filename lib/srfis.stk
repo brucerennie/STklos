@@ -1,7 +1,7 @@
 ;;;;
 ;;;; srfis.stk  - The list of STklos implemented SRFIs and some utilities
 ;;;;
-;;;; Copyright © 2020-2024 Erick Gallesio <eg@stklos.net>
+;;;; Copyright © 2020-2026 Erick Gallesio <eg@stklos.net>
 ;;;;
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -299,7 +299,7 @@
     (258 "Uninterned symbols" () "srfi-258")
     ;; 259 Tagged procedures with type safety (draft)
     (260 "Generated symbols" () "srfi-260")
-    (261 "Portable SRFI Library Reference" () "srfi-261")
+    (261 "Portable SRFI Library Reference")
     ;; 262 Extensible pattern matcher
     ;; 263 Prototype Object System
     (264 "String Syntax for Scheme Regular Expressions" () "srfi-264")
