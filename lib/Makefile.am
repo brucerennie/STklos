@@ -1,7 +1,7 @@
 # Makefile for STklos lib
 #
 #
-# Copyright © 2000-2025 Erick Gallesio <eg@stklos.net>
+# Copyright © 2000-2026 Erick Gallesio <eg@stklos.net>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 #    Creation date: 11-Apr-2000 10:30 (eg)
 
 SUBDIRS = Match.d SILex.d Lalr.d   \
-	      scheme stklos streams srfi
+	      streams scheme stklos srfi
 
 COMP ?= ../utils/tmpcomp
 STKLOS_BINARY ?= ../src/stklos
