@@ -65,16 +65,31 @@
                              (if file (cons n file) n))
                            (reverse names))
                     ,@res))))))
-  (append (process-database *srfi-database*)
-          *srfi-shortcuts*))
+  ;; Shortcuts are ignored now. FIXME: should shortcut be real files?
+  ;;(append (process-database *srfi-database*)
+  ;;         *srfi-shortcuts*))
+  (process-database *srfi-database*))
 
 (define (list-srfis-as-internal)
-  (printf ";;;; Generated file. *** DO NOT EDIT ***\n")
-  (printf "(define %srfi-feature-list '(\n")
-  (for-each (lambda(x) (printf "    ~S\n" x))
-            (build-srfi-features))
-  (printf "))\n;;; ***EOF***\n"))
-
+  ;; build the list of srfi files as a list of the form
+  ;;      ( (srfi-1 . 1)
+  ;;        (lists  . 1)
+  ;;        (srfi-2 . 2)
+  ;;        ...)
+  (let ((lst (apply append
+                    (map (lambda (x)
+                           (let* ((descr  (%description->srfi x))
+                                  (names   (%srfi-names descr))
+                                  (number (%srfi-number descr)))
+                             (map (lambda (x)
+                                    `(,x . ,number)) ;; FIXME: ,(format "srfi-~a" number)))
+                                  names)))
+                         *srfi-database*))))
+    ;; Print the list 
+    (printf ";;;; Generated file. *** DO NOT EDIT ***\n")
+    (printf "(define %srfi-feature-list '(\n")
+    (for-each (lambda(x) (printf "  ~S\n" x)) lst)
+    (printf "))\n;;; ***EOF***\n")))
 
 (define (main args)
   (let ((mode 'text))
