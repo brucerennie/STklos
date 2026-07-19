@@ -216,7 +216,7 @@ static SCM make_export_list(SCM symbols)
 }
 
 
-static SCM normalize_srfi261_library_name(SCM libname)
+static inline SCM normalize_srfi261_library_name(SCM libname)
 {
   SCM candidate = STk_assoc(libname, srfi_list, NULL);
   return (candidate != STk_false) ? CDR(candidate): libname;
