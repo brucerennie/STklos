@@ -49,7 +49,7 @@
     (10 "Sharp Comma External Form")
     (11 "Syntax for receiving multiple values" (let-values))
     ;    12 ........ Withdrawn
-    (13 "String Library" (strings) "srfi-13")
+    (13 "String Library" () "srfi-13")
     (14 "Character-Set Library" (char-sets) "srfi-14")
     (15 "Syntax for dynamic scoping (withdrawn)") ;; Withdrawn, but supported nevertheless
     (16 "Syntax for procedures of variable arity" (case-lambda))
@@ -79,7 +79,7 @@
     ;; 40  A Library of Streams
     (41 "Streams" (streams) "srfi-41")
     ;; 42  Eager Comprehensions
-    (43 "Vector library" (vectors) "srfi-43")
+    (43 "Vector library" () "srfi-43")
     ;; 44  Collections
     (45 "Primitives for Expressing Iterative Lazy Algorithms" (lazy))
     (46 "Basic Syntax-rules Extensions" (syntax-rules))
@@ -164,7 +164,7 @@
     (125 "Intermediate hash tables" (hashtables) "srfi-125")
     ;; 126  R6RS-based hashtables
     (127 "Lazy Sequences" (lazy-sequences) "srfi-127")
-    (128 "Comparators (reduced)" (comparators) "srfi-128")
+    (128 "Comparators (reduced)" () "srfi-128")
     (129 "Titlecase procedures" (titlecase) "srfi-129")
     (130 "Cursor-based string library" (string-cursors) "srfi-130")
     ;; 131  ERR5RS Record Syntax (reduced)
@@ -197,7 +197,7 @@
     (158 "Generators and Accumulators" (generators-and-accumulators) "srfi-158")
     ;; 159  Combinator Formatting
     (160 "Homogeneous numeric vector libraries" () "srfi-160")
-    (161 "Unifiable Boxes" (boxes) "srfi-161")
+    (161 "Unifiable Boxes" (unifiable-boxes) "srfi-161")
     (162 "Comparators sublibrary" (comparators) "srfi-128") ;; this is included in SRFI-128 implementation
     ;; 163  Enhanced array literals
     ;; 164  Enhanced multi-dimensional Arrays
