@@ -56,6 +56,7 @@ struct module_obj {
 SCM STk_STklos_module;          /* The module whose name is STklos */
 static SCM Scheme_module;       /* The module whose name is SCHEME */
 static SCM all_modules;         /* List of all knowm modules */
+static SCM srfi_list;           /* An A-list of srfi and the file to load */ 
 
 
 /*************/
@@ -215,6 +216,13 @@ static SCM make_export_list(SCM symbols)
 }
 
 
+static inline SCM normalize_srfi261_library_name(SCM libname)
+{
+  SCM candidate = STk_assoc(libname, srfi_list, NULL);
+  return (candidate != STk_false) ? CDR(candidate): libname;
+}
+
+
 static SCM normalize_library_name(SCM obj) /* return a library name as a symbol */
 {
   if (SYMBOLP(obj))
@@ -222,23 +230,31 @@ static SCM normalize_library_name(SCM obj) /* return a library name as a symbol 
   else if (CONSP(obj) && STk_int_length(obj) > 0) { /* (list? obj) is true */
     SCM res = STk_open_output_string();
 
-    for (SCM tmp = obj; !NULLP(tmp); tmp = CDR(tmp)) {
-      SCM head = CAR(tmp);
+    /* See if obj is of the form (srfi xxxx) */
+    if (SYMBOLP(CAR(obj)) && strcmp(SYMBOL_PNAME(CAR(obj)), "srfi") == 0 &&
+        SYMBOLP(CAR(CDR(obj))) &&
+        NULLP(CDR(CDR(obj)))) {
+      STk_fprintf(res, "srfi/");
+      STk_print(normalize_srfi261_library_name(CAR(CDR(obj))), res, DSP_MODE);
+    } else {
+      for (SCM tmp = obj; !NULLP(tmp); tmp = CDR(tmp)) {
+        SCM head = CAR(tmp);
 
-      if (SYMBOLP(head))
-        STk_print(head, res, DSP_MODE);
-      else {
-        long val = STk_integer_value(head);
-
-        if (val >= 0)
+        if (SYMBOLP(head))
           STk_print(head, res, DSP_MODE);
-        else
-          STk_error("bad library name component ~S", head);
+        else {
+          long val = STk_integer_value(head);
+
+          if (val >= 0)
+            STk_print(head, res, DSP_MODE);
+          else
+            STk_error("bad library name component ~S", head);
+        }
+        if (!NULLP(CDR(tmp))) /* not the last component */
+          STk_putc('/', res);
       }
-      if (!NULLP(CDR(tmp))) /* not the last component */
-        STk_putc('/', res);
     }
-    return STk_intern(STRING_CHARS(STk_get_output_string(res)));   // FIXME: avoid allocation
+    return STk_intern(STRING_CHARS(STk_get_output_string(res)));
   }
   error_bad_module_name(obj);
   return STk_void;            /* for the compiler */
@@ -987,6 +1003,15 @@ int STk_init_env(void)
 }
 
 
+DEFINE_PRIMITIVE("%set-srfi-list!", set_srfi_list, subr1, (SCM value))
+{
+  if (!CONSP(value) && !NULLP(value))
+    STk_error("bad list ~S", value);
+  srfi_list = value;
+  return STk_void;
+}
+
+
 int STk_late_init_env(void)
 {
   /* Now that symbols are initialized change the STklos module name */
@@ -1039,6 +1064,7 @@ int STk_late_init_env(void)
   ADD_PRIMITIVE(symbol_define);
   ADD_PRIMITIVE(symbol_link);
 
+  ADD_PRIMITIVE(set_srfi_list);
   ADD_PRIMITIVE(normalize_name);
   return TRUE;
 }

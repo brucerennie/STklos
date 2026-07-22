@@ -105,8 +105,18 @@ with *require* or *require-feature*. As with embedded SRFIS, using
 
 
 ==== SRFI features
-For some SRFIs, {{stklos}} accepts that uses them with a name. This names
-are given <<feature_identifiers>>.
+
+For some SRFIs, a feature identifier is associated (see the list of defined
+feature identifiers in <<feature_identifiers>>). These SRFIs can be used by
+using their feature identifier, rather than their number . 
+
+For instance, to use `SRFI-1`, whose associated feature identifier is `lists`,
+one can use the following form:
+
+```scheme
+(import (srfi lists))    ;; equivalent to (import (srfi 1))
+```
+
 
 [#feature_identifiers]
 .Feature identifiers

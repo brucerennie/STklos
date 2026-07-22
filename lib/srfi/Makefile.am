@@ -1,6 +1,6 @@
 # Makefile for the R7RS SRFI standard libraries
 #
-# Copyright © 2021-2025 Erick Gallesio <eg@stklos.net>
+# Copyright © 2021-2026 Erick Gallesio <eg@stklos.net>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,7 +33,8 @@ SO = @SH_SUFFIX@
 #
 # SRFI written in Scheme
 #
-SRC_STK   = 1.stk   \
+SRC_STK   = 0.stk   \
+            1.stk   \
             2.stk   \
             4.stk   \
             5.stk   \
@@ -155,7 +156,8 @@ SRC_STK   = 1.stk   \
             260.stk \
             264.stk
 
-SRC_OSTK =  1.ostk   \
+SRC_OSTK =  0.ostk   \
+            1.ostk   \
             2.ostk   \
             4.ostk   \
             5.ostk   \

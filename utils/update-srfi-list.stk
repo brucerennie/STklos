@@ -65,16 +65,43 @@
                              (if file (cons n file) n))
                            (reverse names))
                     ,@res))))))
-  (append (process-database *srfi-database*)
-          *srfi-shortcuts*))
+  ;; Shortcuts are ignored now. FIXME: should shortcut be real files?
+  ;;(append (process-database *srfi-database*)
+  ;;         *srfi-shortcuts*))
+  (process-database *srfi-database*))
 
 (define (list-srfis-as-internal)
-  (printf ";;;; Generated file. *** DO NOT EDIT ***\n")
-  (printf "(define %srfi-feature-list '(\n")
-  (for-each (lambda(x) (printf "    ~S\n" x))
-            (build-srfi-features))
-  (printf "))\n;;; ***EOF***\n"))
-
+  ;; build the list of srfi files as a list of the form
+  ;;      ( (srfi-1 . 1)
+  ;;        (lists  . 1)
+  ;;        (srfi-2 . 2)
+  ;;        ...)
+  (let ((lst (let Loop ((lst *srfi-database*)
+                        (srfis '())
+                        (aliases '()))
+               (if (null?  lst)
+                   ;; Return the list of srfis followed by the sorted list of aliases
+                   (append (reverse srfis)
+                           (sort aliases
+                                 (lambda (x y)
+                                   (string-ci<? (symbol->string (car x))
+                                                (symbol->string (car y))))))
+                   ;; Process an item of the database
+                   (let* ((descr  (%description->srfi (car lst)))
+                          (names  (%srfi-names descr))
+                          (number (%srfi-number descr)))
+                     (Loop (cdr lst)
+                           (cons `(,(car names) . ,number) srfis)
+                           (if (null? (cdr names))
+                               ;; No alias for this SRFI
+                               aliases
+                               ;; Add the alias to the list
+                               (cons `(,(cadr names) . ,number) aliases))))))))
+    ;; Print the list
+    (printf ";;;; Generated file. *** DO NOT EDIT ***\n")
+    (printf "(define %srfi-feature-list '(\n")
+    (for-each (lambda(x) (printf "  ~S\n" x)) lst)
+    (printf "))\n;;; ***EOF***\n")))
 
 (define (main args)
   (let ((mode 'text))

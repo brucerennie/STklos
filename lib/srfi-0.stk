@@ -56,7 +56,7 @@
     ;; 'i386, x86-64, ppc, sparc, ...
     ;; 'ilp32, lp64, ilp64
     ,(if (%big-endian?) 'big-endian 'little-endian)
-    ,@%srfi-feature-list
+    ,@(map car %srfi-feature-list)
     ))
 
 ;; ----------------------------------------------------------------------
@@ -229,6 +229,9 @@ doc>
 ;; ----------------------------------------------------------------------
 (define-macro (cond-expand . clauses)
   (%srfi-0-expand clauses))
+
+;; ;; Make the A-list of SRFIs accessible from C
+(%set-srfi-list! %srfi-feature-list)
 
 ) ;; End of module SRFI-0
 
