@@ -254,7 +254,7 @@ static SCM normalize_library_name(SCM obj) /* return a library name as a symbol 
           STk_putc('/', res);
       }
     }
-    return STk_intern(STRING_CHARS(STk_get_output_string(res)));   // FIXME: avoid allocation
+    return STk_intern(STRING_CHARS(STk_get_output_string(res)));
   }
   error_bad_module_name(obj);
   return STk_void;            /* for the compiler */

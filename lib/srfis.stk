@@ -180,7 +180,7 @@
     (141 "Integer Division" (integer-division) "srfi-141")
     ;; 142  ....... withdrawn
     (143  "Fixnums" (fixnums))
-    (144  "Flonums" () "srfi-144")
+    (144  "Flonums" (flonums) "srfi-144")
     (145 "Assumptions" (assume))
     ;; 146  Mappings
     ;; 147  Custom macro transformers
@@ -196,7 +196,7 @@
     ;; 157  Continuation marks
     (158 "Generators and Accumulators" (generators-and-accumulators) "srfi-158")
     ;; 159  Combinator Formatting
-    (160 "Homogeneous numeric vector libraries" () "srfi-160")
+    (160 "Homogeneous numeric vector libraries" (homogeneous-vectors) "srfi-160")
     (161 "Unifiable Boxes" (unifiable-boxes) "srfi-161")
     (162 "Comparators sublibrary" (comparators) "srfi-128") ;; this is included in SRFI-128 implementation
     ;; 163  Enhanced array literals
