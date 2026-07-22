@@ -28086,8 +28086,18 @@ with <strong>require</strong> or <strong>require-feature</strong>. As with embed
 <div class="sect3">
 <h4 id="doc_srfi_features">13.2.3. SRFI features</h4>
 <div class="paragraph">
-<p>For some SRFIs, <strong><em>STklos</em></strong> accepts that uses them with a name. This names
-are given <a href="#feature_identifiers">Table 2</a>.</p>
+<p>For some SRFIs, a feature identifier is associated (see the list of defined
+feature identifiers in <a href="#feature_identifiers">Table 2</a>). These SRFIs can be used by
+using their feature identifier, rather than their number .</p>
+</div>
+<div class="paragraph">
+<p>For instance, to use <code>SRFI-1</code>, whose associated feature identifier is <code>lists</code>,
+one can use the following form:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="scheme"><span class="p">(</span><span class="nf">import</span> <span class="p">(</span><span class="nf">srfi</span> <span class="nv">lists</span><span class="p">))</span>    <span class="c1">;; equivalent to (import (srfi 1))</span></code></pre>
+</div>
 </div>
 <table id="feature_identifiers" class="tableblock frame-all grid-all stretch small">
 <caption class="title">Table 2. Feature identifiers</caption>
@@ -28133,10 +28143,6 @@ are given <a href="#feature_identifiers">Table 2</a>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">let-values</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">srfi-11</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">strings</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">srfi-13</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">char-sets</p></td>
@@ -28205,10 +28211,6 @@ are given <a href="#feature_identifiers">Table 2</a>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">streams</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">srfi-41</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">vectors</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">srfi-43</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">lazy</p></td>
@@ -28307,10 +28309,6 @@ are given <a href="#feature_identifiers">Table 2</a>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">srfi-127</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">comparators</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">srfi-128</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">titlecase</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">srfi-129</p></td>
 </tr>
@@ -28371,7 +28369,7 @@ are given <a href="#feature_identifiers">Table 2</a>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">srfi-158</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boxes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unifiable-boxes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">srfi-161</p></td>
 </tr>
 <tr>
