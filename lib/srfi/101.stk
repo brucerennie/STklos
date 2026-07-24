@@ -56,6 +56,8 @@
           caadr caaar cdar cddr cadr caar cdr car
           cons
           pair?
-          quote))
+          quote
+
+          restore-r7-bindings!))
 
 (provide "srfi/101")

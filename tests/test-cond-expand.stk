@@ -534,7 +534,10 @@
   (cond-expand (srfi-498 498) (else #f))
   (cond-expand (srfi-499 499) (else #f))))
 
-(test "cond-expand srfi-list" #t (list? srfis))
+;; Restore the original R7RS bindings (otherwise the folowing call of test
+;; (which use eq? or list?) is broken
+(restore-r7-bindings!)
 
+(test "cond-expand srfi-list" #t (list? srfis))
 (test-section-end)
 

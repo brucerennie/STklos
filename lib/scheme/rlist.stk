@@ -93,6 +93,69 @@
         (rename srfi101:linear-access-list->random-access-list
                 linear-access-list->random-access-list))
 
+;;
+;; This macro can be used to reset the symbol broken by a simple
+;; (import (scheme rlist))
+;;
+;; In effect, importing this srfi overloads some basic Scheme
+;; primitives, and we can have
+;;     (list? (features))      => #t
+;;     (import (srfi 101))
+;;     (list? (features))      => #f
+;; In fact, we have to do
+;; (list? (linear-access-list->random-access-list  (features))) => #t
+;; 
+(define-macro (restore-r7-bindings!)
+  `(begin
+     (define pair? (symbol-value 'pair? 'SCHEME))
+     (define cons (symbol-value 'cons 'SCHEME))
+     (define car (symbol-value 'car 'SCHEME))
+     (define cdr (symbol-value 'cdr 'SCHEME))
+     (define caar (symbol-value 'caar 'SCHEME))
+     (define cadr (symbol-value 'cadr 'SCHEME))
+     (define cddr (symbol-value 'cddr 'SCHEME))
+     (define cdar (symbol-value 'cdar 'SCHEME))
+     (define caaar (symbol-value 'caaar 'SCHEME))
+     (define caadr (symbol-value 'caadr 'SCHEME))
+     (define caddr (symbol-value 'caddr 'SCHEME))
+     (define cadar (symbol-value 'cadar 'SCHEME))
+     (define cdaar (symbol-value 'cdaar 'SCHEME))
+     (define cdadr (symbol-value 'cdadr 'SCHEME))
+     (define cdddr (symbol-value 'cdddr 'SCHEME))
+     (define cddar (symbol-value 'cddar 'SCHEME))
+     (define caaaar (symbol-value 'caaaar 'SCHEME))
+     (define caaadr (symbol-value 'caaadr 'SCHEME))
+     (define caaddr (symbol-value 'caaddr 'SCHEME))
+     (define caadar (symbol-value 'caadar 'SCHEME))
+     (define cadaar (symbol-value 'cadaar 'SCHEME))
+     (define cadadr (symbol-value 'cadadr 'SCHEME))
+     (define cadddr (symbol-value 'cadddr 'SCHEME))
+     (define caddar (symbol-value 'caddar 'SCHEME))
+     (define cdaaar (symbol-value 'cdaaar 'SCHEME))
+     (define cdaadr (symbol-value 'cdaadr 'SCHEME))
+     (define cdaddr (symbol-value 'cdaddr 'SCHEME))
+     (define cdadar (symbol-value 'cdadar 'SCHEME))
+     (define cddaar (symbol-value 'cddaar 'SCHEME))
+     (define cddadr (symbol-value 'cddadr 'SCHEME))
+     (define cddddr (symbol-value 'cddddr 'SCHEME))
+     (define cdddar (symbol-value 'cdddar 'SCHEME))
+     (define null? (symbol-value 'null? 'SCHEME))
+     (define list? (symbol-value 'list? 'SCHEME))
+     (define list (symbol-value 'list 'SCHEME))
+     (define make-list (symbol-value 'make-list 'SCHEME))
+     (define length (symbol-value 'length 'SCHEME))
+     (define append (symbol-value 'append 'SCHEME))
+     (define reverse (symbol-value 'reverse 'SCHEME))
+     (define list-tail (symbol-value 'list-tail 'SCHEME))
+     (define list-ref (symbol-value 'list-ref 'SCHEME))
+     (define map (symbol-value 'map 'SCHEME))
+     (define for-each (symbol-value 'for-each 'SCHEME))
+     (define-macro (quote . args)
+       `(#%quote ,@args))))
+
+(export restore-r7-bindings!)
+
+;; ----------------------------------------------------------------------
 (%user-type-proc-set! 'rlist 'describe
                       (lambda (x port)
                         (format port "an rlist with ~a elements"
@@ -105,6 +168,7 @@
   (lambda args
     (srfi101:linear-access-list->random-access-list args)))
 
+;; ----------------------------------------------------------------------
 
 ;; We give correct names to Scheme CAR and CDR, and also
 ;; set NULL?
