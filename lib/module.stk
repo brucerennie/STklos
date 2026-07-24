@@ -1,7 +1,7 @@
 ;;;;
 ;;;; module.stk -- Module stuff
 ;;;;
-;;;; Copyright © 2000-2025 Erick Gallesio <eg@stklos.net>
+;;;; Copyright © 2000-2026 Erick Gallesio <eg@stklos.net>
 ;;;;
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -503,6 +503,15 @@ doc>
     ;(%do-imports  (compiler-current-module) (list-copy imp) #t)
     (%do-imports lib (list-deep-copy imp) #f)))
 
+
+;;
+;; A simple way to import a library given a name. It is more of les equivalent to
+;; (import name). This one is a function and not syntax and name can be computed.
+;;
+(define (%import-library name)
+  (%do-imports (current-module)
+               (list (list (%normalize-library-name name)))
+               #f))
 
 ;;=============================================================================
 ;;
