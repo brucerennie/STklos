@@ -536,7 +536,12 @@
 
 ;; Restore the original R7RS bindings (otherwise the folowing call of test
 ;; (which use eq? or list?) is broken
-(restore-r7-bindings!)
+;;  We could use
+;;  (restore-r7-bindings!)
+;; which was designated specially for that, but a simpler way could be simply
+;; to re-import SCHEME to get back all the standard bindings
+(import SCHEME)
+
 
 (test "cond-expand srfi-list" #t (list? srfis))
 (test-section-end)
