@@ -26,7 +26,6 @@
 (define-module SRFI-0
   (import SCHEME)
   (export srfi0-register-feature!
-          srfi-0-feature-implementation-file
           require-feature
           cond-expand
           %srfi-0-expand ;; FIXME: try to avoid this exportation
@@ -63,21 +62,6 @@
 (define (srfi0-register-feature! feature)
   (set! *all-features* (cons feature *all-features*)))
 
-;; ----------------------------------------------------------------------
-(define (srfi-0-feature-implementation-file x)
-  (let Loop ((l *all-features*))
-    (if (null? l)
-        (error "feature ~S is not supported" x)
-        (let ((current (car l)))
-          (if (pair? current)
-              ;; Clause is (FEATURE . file) or (FEATURE file1 file2 ...)
-              (if (eq? (car current) x)
-                  (let ((val (cdr current)))
-                    (if (pair? val) val (list val)))
-                  (Loop (cdr l)))
-              (if (eq? current x)
-                  #f
-                  (Loop (cdr l))))))))
 
 #|
 <doc EXT require-feature
@@ -105,30 +89,12 @@ doc>
                 ((string? feat) (string->symbol feat))
                 ((integer? feat) (symbol-append 'srfi- feat))
                 (else (error "bad feature" feat))))
-         (files (srfi-0-feature-implementation-file name)))
-    (when files
-      (for-each (lambda (x)
-                  ;; NOTE   Do not use the "require" function here, but the macro!!
-                  ;; KLUDGE Since we accept tat srfi-N loads eventually srfi/N, we
-                  ;; need to provide "srfi/N" when require-feature loads a file.
-                  ;; For instance,
-                  ;;   (begin
-                  ;;      (import (srfi 25))
-                  ;;      (require-feature 25))
-                  ;; Here, import will load 25.so (which provides "srfi/25")
-                  ;; and require-feature will require "srfi-25" which will try to
-                  ;; reload "25.so" since "srfi-25" was not provided. Problem:
-                  ;; .so files cannot be loaded more than once.
-                  ;;
-                  (if (regexp-match "srfi-[0-9]+" x)
-                      (let ((str (format "srfi/~a" (substring x 5 (string-length x)))))
-                        (unless (provided? str)
-                          ;; Never loaded srfi/N or srfi-N
-                          (require x)
-                          (provide str)))
-                      ;; simple require
-                      (require x)))
-                files))))
+         (info  (assoc name %srfi-feature-list)))
+    (if info
+        ;; A SRFI exists for this feature. Import it
+        (%import-library (list 'srfi (cdr info)))
+        (error "feature ~S is not supported" feat))))
+
 
 ;; ----------------------------------------------------------------------
 (define (%load-implementation files)
@@ -210,17 +176,11 @@ doc>
 
          (else
           ;; Clause is (FEATURE ...)
-          (let* ((name  (caar clauses))
-                 (data  (%find-feature name))
-                 (sname (format "~a" name)))
+          (let* ((name (caar clauses))
+                 (data (assoc name %srfi-feature-list)))
             (if data
                 (begin
-                  (unless (or (boolean? data)  (provided? sname))
-                    (%load-implementation data)
-                    (when (pair? data)
-                      ;; We have loaded multiple files with a unique name
-                      ;; => provide 'sname' to avoid multiple loading.
-                      (provide sname)))
+                  (%import-library `(srfi ,name))
                   `(begin ,@(cdar clauses)))
                 `(cond-expand ,@(cdr clauses))))))))))
 

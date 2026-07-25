@@ -3,7 +3,7 @@
 ;;;; 15.stk         -- A relay for WITHDRAWN (srfi 15)
 ;;;;                    Note that this SRFI is available by default in STklos
 ;;;;
-;;;; Copyright © 2022 Erick Gallesio - I3S-CNRS/Polytech Nice-Sophia <eg@unice.fr>
+;;;; Copyright © 2022-2026 Erick Gallesio <eg@stklos.net>
 ;;;;
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 ;;;;
 
 (define-module srfi/15
-  (import SCHEME)
+  (import (only SCHEME fluid-let))
   (export fluid-let))
 
 

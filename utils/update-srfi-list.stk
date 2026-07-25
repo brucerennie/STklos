@@ -51,25 +51,6 @@
 ;; Print the SRFI list in an internal format to be used by STklos
 ;; implementation
 ;;
-(define (build-srfi-features)
-  (define (process-database db)
-    (let Loop ((db  db)
-               (res '()))
-      (if (null? db)
-          (reverse res)
-          (let* ((srfi (%description->srfi (car db)))
-                 (names (%srfi-names srfi))
-                 (file  (%srfi-file srfi)))
-            (Loop (cdr db)
-                  `(,@(map (lambda (n)
-                             (if file (cons n file) n))
-                           (reverse names))
-                    ,@res))))))
-  ;; Shortcuts are ignored now. FIXME: should shortcut be real files?
-  ;;(append (process-database *srfi-database*)
-  ;;         *srfi-shortcuts*))
-  (process-database *srfi-database*))
-
 (define (list-srfis-as-internal)
   ;; build the list of srfi files as a list of the form
   ;;      ( (srfi-1 . 1)
@@ -97,8 +78,9 @@
                                aliases
                                ;; Add the alias to the list
                                (cons `(,(cadr names) . ,number) aliases))))))))
-    ;; Print the list
+
     (printf ";;;; Generated file. *** DO NOT EDIT ***\n")
+    ;; Generate the list of features
     (printf "(define %srfi-feature-list '(\n")
     (for-each (lambda(x) (printf "  ~S\n" x)) lst)
     (printf "))\n;;; ***EOF***\n")))

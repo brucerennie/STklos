@@ -1,8 +1,8 @@
 ;;;;
 ;;;;
-;;;; srfi-175.stk         -- Wrapper for the implementation of SRFI-175
+;;;; 145.stk         -- Implmentation of SRFI-145 (assume)
 ;;;;
-;;;; Copyright © 2020-2026 Erick Gallesio <eg@stklos.net>
+;;;; Copyright © 2026 Erick Gallesio <eg@stklos.net>
 ;;;;
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -20,12 +20,14 @@
 ;;;; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ;;;; USA.
 ;;;;
-;;;;           Author: Erick Gallesio [eg@unice.fr]
-;;;;    Creation date: 28-Jul-2020 15:35
+;;;;           Author: Erick Gallesio [eg@stklos.net]
+;;;;    Creation date: 25-Jul-2026 21:34
 ;;;;
 
+(define-library (srfi 145)
+  (import (only SCHEME assume))
+  (export assume))
 
-;; This SRFI is implemented completely in C.
-;; All the primitives defined in C, are exported in the C file.
-(define-library srfi/175)
-(provide "srfi/175")
+(provide "srfi/145")
+
+

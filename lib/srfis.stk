@@ -29,60 +29,62 @@
 ;;;;    1. SRFI number   (an int)
 ;;;;    2. Title of the SRFI (a string)
 ;;;;    3. list of the aliases of this SRFI (a list of the other names of this SRFI)
-;;;;    4. File that must be loaded to implement this SRFI
-;;;; Point 3 and 4 are optional.
+;;;;    4. File that must be loaded when user import the SRFI
+;;;;    5. #t if the SRFI is embedded (if absent we asumme it is #f)
+;;;; Points 3,4,5 are optional.
 ;;;;
 
 
 (define *srfi-database*
-  '((0  "Feature-based conditional expansion construct")
+  '((0  "Feature-based conditional expansion construct" () "srfi-0" #t)
     (1  "List Library" (lists) "srfi-1")
     (2  "AND-LET*: an AND with local bindings, a guarded LET* special form"
-        (and-let*) "srfi-2")
+        (and-let*) "srfi-2" #t)
     ;;  3  ........ Withdrawn
     (4  "Homogeneous numeric vector datatypes" () "srfi-4")
     (5  "A compatible let form with signatures and rest arguments" (let) "srfi-5")
-    (6  "Basic String Ports" (basic-string-ports))
+    (6  "Basic String Ports" (basic-string-ports) "srfi-6" #t)
     (7  "Feature-based program configuration language" (program) "srfi-7")
-    (8  "Receive: Binding to multiple values" (receive))
-    (9  "Defining Record Types" (records) "srfi-9")
-    (10 "Sharp Comma External Form")
-    (11 "Syntax for receiving multiple values" (let-values))
+    (8  "Receive: Binding to multiple values" (receive) "srfi-8" #t)
+    (9  "Defining Record Types" (records) "srfi-9" #t)
+    (10 "Sharp Comma External Form" (sharp-comma) "srfi-10" #t)
+    (11 "Syntax for receiving multiple values" (let-values) "srfi-11" #t)
     ;    12 ........ Withdrawn
     (13 "String Library" () "srfi-13")
     (14 "Character-Set Library" (char-sets) "srfi-14")
-    (15 "Syntax for dynamic scoping (withdrawn)") ;; Withdrawn, but supported nevertheless
-    (16 "Syntax for procedures of variable arity" (case-lambda))
+    (15 "Syntax for dynamic scoping (withdrawn)" () "srfi-15"
+        #t) ;; Withdrawn, but supported nevertheless
+    (16 "Syntax for procedures of variable arity" (case-lambda) "srfi-16" #t)
     (17 "Generalized set!" (generalized-set!) "srfi-17")
-    (18 "Multithreading support" (multithreading))
+    (18 "Multithreading support" (multithreading) "srfi-18" #t)
     (19 "Time Data Types and Procedures" (time) "srfi-19")
     ;;  20 ........ Withdrawn
     ;;  21  Real-time multithreading support
     (22 "Running Scheme Scripts on Unix" (scripting))
-    (23 "Error reporting mechanism" (error))
+    (23 "Error reporting mechanism" (error) "srfi-23" #t)
     ;;  24 ........ Withdrawn
     (25 "Multi-dimensional Arrays" (multi-dimensional-arrays) "srfi-25")
     (26 "Notation for Specializing Parameters without Currying" (cut) "srfi-26")
     (27 "Source of random bits" (random-bits) "srfi-27")
-    (28 "Basic Format Strings" (basic-format-strings))
+    (28 "Basic Format Strings" (basic-format-strings) "srfi-28" #t)
     (29 "Localization" (localization) "srfi-29")
-    (30 "Nested Multi-line Comments")
-    (31 "A special form for recursive evaluation" (rec))
+    (30 "Nested Multi-line Comments" () "srfi-30" #t)
+    (31 "A special form for recursive evaluation" (rec)  "srfi-31")
     ;;   32 ........ Withdrawn
     ;;   33 ........ Withdrawn
-    (34 "Exception Handling for Programs")
+    (34 "Exception Handling for Programs" () "srfi-34" #t)
     (35 "Conditions" () "srfi-35")
     (36 "I/O Conditions" () "srfi-36")
     (37 "args-fold: a program argument processor" (args-fold) "srfi-37")
-    (38 "External representation of shared structures" (with-shared-structures))
-    (39 "Parameters objects" (parameters))
+    (38 "External representation of shared structures" (with-shared-structures) #t)
+    (39 "Parameters objects" (parameters) "srfi-39" #t)
     ;; 40  A Library of Streams
     (41 "Streams" (streams) "srfi-41")
     ;; 42  Eager Comprehensions
     (43 "Vector library" () "srfi-43")
     ;; 44  Collections
-    (45 "Primitives for Expressing Iterative Lazy Algorithms" (lazy))
-    (46 "Basic Syntax-rules Extensions" (syntax-rules))
+    (45 "Primitives for Expressing Iterative Lazy Algorithms" (lazy) #t)
+    (46 "Basic Syntax-rules Extensions" (syntax-rules) #t)
     ;; 47 Array
     (48 "Intermediate Format Strings" (immediate-format-strings) "srfi-48")
     ;; 49 Indentation-sensitive syntax (NEVER)
@@ -91,7 +93,7 @@
     ;; 52  ....... withdrawn
     ;; 53  ....... withdrawn
     (54 "Formatting" (cat) "srfi-54")
-    (55 "Require-extension")
+    (55 "Require-extension" () #t)
     ;; 56  ....... withdrawn
     ;; 57  Records
     ;; 58 Array Notation
@@ -123,8 +125,8 @@
     ;; 84  ....... withdrawn
     ;; 85  ....... withdrawn
     ;; 86  MU and NU simulating VALUES & CALL-WITH-VALUES
-    (87 "=> in case clauses" (case))
-    (88 "Keyword Objects")
+    (87 "=> in case clauses" (case) "srfi-87" #t)
+    (88 "Keyword Objects" () "srfi-88" #t)
     (89 "Optional Positional and Named Parameters" () "srfi-89")
     ;; 90  Extensible hash table constructor
     ;; 91  ....... withdrawn
@@ -134,10 +136,12 @@
     (95 "Sorting and Merging" (sort-and-merging) "srfi-95")
     (96 "SLIB Prerequisites" () "srfi-96")
     ;; 97 SRFI Libraries
-    (98 "Interface to access environment variables" (os-environment-variables))
+    (98 "Interface to access environment variables" (os-environment-variables)
+        "srfi-98" #t)
     ;; 99 ERR5RS Records
     (100 "define-lambda-object" (define-lambda-object) "srfi-100")
-    (101 "Purely Functional Random-Access Pairs and Lists" (random-access-lists) "srfi-101")
+    (101 "Purely Functional Random-Access Pairs and Lists" (random-access-lists)
+         "srfi-101")
     ;; 102
     ;; 103  ....... withdrawn
     ;; 104  ....... withdrawn
@@ -147,14 +151,14 @@
     ;; 108  Named quasi-literal constructors
     ;; 109  Extended string quasi-literals
     ;; 110  Sweet-expressions (t-expressions)
-    (111 "Boxes" (boxes))
-    (112 "Environment Inquiry" (environment-inquiry))
+    (111 "Boxes" (boxes) "srfi-111" #t)
+    (112 "Environment Inquiry" (environment-inquiry) "srfi-112" #t)
     (113 "Sets and Bags" (sets-and-bags) "srfi-113")
     ;; 114  ....... withdrawn
     (115  "Scheme Regular Expressions" (regexp) "srfi-115")
     (116 "Immutable List Library" () "srfi-116")
     (117 "Queues based on lists" (list-queues) "srfi-117")
-    (118 "Simple adjustable-size strings" ())
+    (118 "Simple adjustable-size strings" () "srfi-118" #t)
     ;; 119  wisp: simpler indentation-sensitive scheme
     ;; 120  Timer APIs
     ;; 121  ....... withdrawn
@@ -174,14 +178,14 @@
     (135  "Immutable Texts" (immutable-texts) "srfi-135")
     ;; 136  Extensible record types
     (137 "Minimal Unique Types" (types) "srfi-137")
-    (138 "Compiling Scheme programs to executables" (compiling))
+    (138 "Compiling Scheme programs to executables" (compiling) "srfi-138" #t)
     ;; 139  Syntax parameters
     ;; 140  Immutable Strings
     (141 "Integer Division" (integer-division) "srfi-141")
     ;; 142  ....... withdrawn
-    (143  "Fixnums" (fixnums))
+    (143  "Fixnums" (fixnums) "srfi-143" #t)
     (144  "Flonums" (flonums) "srfi-144")
-    (145 "Assumptions" (assume))
+    (145 "Assumptions" (assume) "srfi-145" #t)
     ;; 146  Mappings
     ;; 147  Custom macro transformers
     ;; 148  Eager syntax-rules
@@ -198,21 +202,22 @@
     ;; 159  Combinator Formatting
     (160 "Homogeneous numeric vector libraries" (homogeneous-vectors) "srfi-160")
     (161 "Unifiable Boxes" (unifiable-boxes) "srfi-161")
-    (162 "Comparators sublibrary" (comparators) "srfi-128") ;; this is included in SRFI-128 implementation
+    (162 "Comparators sublibrary" (comparators)
+         "srfi-128") ;; this is included in SRFI-128 implementation
     ;; 163  Enhanced array literals
     ;; 164  Enhanced multi-dimensional Arrays
     ;; 165  The Environment Monad
     ;; 166  Monadic Formatting
     ;; 167  Ordered Key Value Store
     ;; 168  Generic Tuple Store Database
-    (169 "Underscores in numbers")
+    (169 "Underscores in numbers" () "srfi-169" #t)
     (170 "POSIX API" (posix) "srfi-170")
     (171 "Transducers" (transducers) "srfi-171")
     ;; 172  Two Safer Subsets of R7RS
     (173 "Hooks" (hooks) "srfi-173")
     (174 "POSIX Timespecs" (posix-timespecs) "srfi-174")
     (175 "ASCII character library" (ascii) "srfi-175")
-    (176 "Version flag" (version))
+    (176 "Version flag" (version) "srfi-176" #t)
     ;; 177  ....... withdrawn
     (178 "Bitvector library" (bitvectors) "srfi-178")
     ;; 179  Nonempty Intervals and Generalized Arrays (Updated)
@@ -229,10 +234,10 @@
          (maybe-either) "srfi-189")
     (190 "Coroutines Generators" (coroutine-generators) "srfi-190")
     ;;191  ....... withdrawn
-    (192 "Port Positioning" (port-positioning))
-    (193 "Command line" (command-line))
+    (192 "Port Positioning" (port-positioning) "srfi-192" #t)
+    (193 "Command line" (command-line) "srfi-193" #t)
     ;; 194 Random data generators
-    (195 "Multiple-value boxes" (multiple-value-boxes))
+    (195 "Multiple-value boxes" (multiple-value-boxes) "srfi-195" #t)
     (196 "Range Objects" (ranges) "srfi-196")
     ;; 197  Pipeline Operators
     ;; 198  ...... withdrawn
@@ -245,7 +250,7 @@
     ;; 205  ....... withdrawn
     ;; 206  Auxiliary Syntax Keywords
     (207  "String-notated bytevectors" () "srfi-207")
-    (208  "NaN procedures" (nan))
+    (208  "NaN procedures" (nan) "srfi-208" #t)
     ;; 209  Enumerations and Enum Sets
     ;; 210  Procedures and Syntax for Multiple Values
     ;; 211  Scheme Macro Libraries
@@ -256,7 +261,7 @@
     (216  "SICP Prerequisites (Portable)" (sicp) "srfi-216")
     (217  "Integer Sets" (integer-sets) "srfi-217")
     ;; 218 ...... withdrawn
-    (219 "Define higher-order lambda" (higher-order-lambdas))
+    (219 "Define higher-order lambda" (higher-order-lambdas) "srfi-219" #t)
     ;; 220 ...... withdrawn
     (221 "Generator/accumulator sub-library" (generators&accumulators) "srfi-221")
     (222 "Compound objects" (compound-objects) "srfi-222")
@@ -281,7 +286,7 @@
     ;; 241 Match -- Simple Pattern-Matching Syntax to Express Catamorphisms on Scheme Data
     ;; 242 The CFG Language
     ;; 243 ...... withdrawn (Unreadable data)
-    (244 "Multiple-value definitions" (define-values))
+    (244 "Multiple-value definitions" (define-values) "srfi-244" #f)
     ;; 245 ...... withdrawn (Mixing definitions and expressions within bodies)
     ;; 246 ...... withdrawn (Guardians)
     ;; 247 Syntactic Monads
@@ -298,7 +303,7 @@
     (258 "Uninterned symbols" (uninterned-symbols) "srfi-258")
     ;; 259 Tagged procedures with type safety (draft)
     (260 "Generated symbols" (generated-symbols) "srfi-260")
-    (261 "Portable SRFI Library Reference")
+    (261 "Portable SRFI Library Reference" () "srfi-261" #t)
     ;; 262 Extensible pattern matcher
     ;; 263 Prototype Object System
     (264 "String Syntax for Scheme Regular Expressions" (string-regexps) "srfi-264")
@@ -313,7 +318,7 @@
 ;; ----------------------------------------------------------------------
 
 ;; A struct to ease srfi information manipulations
-(define-struct %srfi number title names file)
+(define-struct %srfi number title names file embedded)
 
 
 (define (%description->srfi lst)
@@ -324,11 +329,15 @@
                        (caddr lst)))
          (file   (and aliases
                        (not (null? (cdddr lst)))
-                       (cadddr lst))))
+                       (cadddr lst)))
+         (embedd (and file
+                      (not (null? (cddddr lst)))
+                      (car (cddddr lst)))))
     (make-%srfi number
                 title
                 (cons name (or aliases '()))
-                file)))
+                file
+                embedd)))
 
 (define (find-srfi number)
   (let ((tmp (assoc number *srfi-database*)))

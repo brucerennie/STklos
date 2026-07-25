@@ -85,7 +85,7 @@ and permits to ignore if the SRFI is embedded).
 *List of embedded SRFIs:*
  {{for-each (lambda (x)
              (let ((nb (car x)))
-               (unless (srfi-file nb)
+               (when (srfi-embedded? nb)
                  (printf "``srfi-~a`` " nb))))
             *srfi-database*}}
 
@@ -99,7 +99,7 @@ with *require* or *require-feature*. As with embedded SRFIS, using
 *List of external SRFIs:*
 {{for-each (lambda (x)
              (let ((nb (car x)))
-               (when (srfi-file nb)
+               (unless (srfi-embedded? nb)
                  (printf "``srfi-~a`` " nb))))
             *srfi-database*}}
 
