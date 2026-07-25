@@ -56,6 +56,7 @@ SRC_STK   = 0.stk   \
             26.stk  \
             28.stk  \
             29.stk  \
+            30.stk  \
             31.stk  \
             34.stk  \
             35.stk  \
@@ -86,6 +87,7 @@ SRC_STK   = 0.stk   \
             94.stk  \
             95.stk  \
             96.stk  \
+            98.stk  \
             100.stk \
             101.stk \
             111.stk \
@@ -105,9 +107,11 @@ SRC_STK   = 0.stk   \
             134.stk \
             135.stk \
             137.stk \
+            138.stk \
             141.stk \
             143.stk \
             144.stk \
+            145.stk \
             151.stk \
             152.stk \
             154.stk \
@@ -125,6 +129,7 @@ SRC_STK   = 0.stk   \
             185.stk \
             189.stk \
             190.stk \
+            192.stk \
             193.stk \
             195.stk \
             196.stk \
@@ -154,6 +159,7 @@ SRC_STK   = 0.stk   \
             253.stk \
             258.stk \
             260.stk \
+            261.stk \
             264.stk
 
 SRC_OSTK =  0.ostk   \
@@ -179,6 +185,7 @@ SRC_OSTK =  0.ostk   \
             26.ostk  \
             28.ostk  \
             29.ostk  \
+            30.ostk  \
             31.ostk  \
             34.ostk  \
             35.ostk  \
@@ -209,6 +216,7 @@ SRC_OSTK =  0.ostk   \
             94.ostk  \
             95.ostk  \
             96.ostk  \
+            98.ostk  \
             100.ostk \
             101.ostk \
             111.ostk \
@@ -228,8 +236,10 @@ SRC_OSTK =  0.ostk   \
             134.ostk \
             135.ostk \
             137.ostk \
+            138.ostk \
             141.ostk \
             144.ostk \
+            145.ostk \
             143.ostk \
             151.ostk \
             152.ostk \
@@ -248,6 +258,7 @@ SRC_OSTK =  0.ostk   \
             185.ostk \
             189.ostk \
             190.ostk \
+            192.ostk \
             193.ostk \
             195.ostk \
             196.ostk \
@@ -277,6 +288,7 @@ SRC_OSTK =  0.ostk   \
             253.ostk \
             258.ostk \
             260.ostk \
+            261.ostk \
             264.ostk
 
 #

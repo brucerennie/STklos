@@ -178,14 +178,14 @@
     (135  "Immutable Texts" (immutable-texts) "srfi-135")
     ;; 136  Extensible record types
     (137 "Minimal Unique Types" (types) "srfi-137")
-    ;; FIXME(138 "Compiling Scheme programs to executables" (compiling) )
+    (138 "Compiling Scheme programs to executables" (compiling) "srfi-138" #t)
     ;; 139  Syntax parameters
     ;; 140  Immutable Strings
     (141 "Integer Division" (integer-division) "srfi-141")
     ;; 142  ....... withdrawn
     (143  "Fixnums" (fixnums) "srfi-143" #t)
     (144  "Flonums" (flonums) "srfi-144")
-    ;; FIXME: (145 "Assumptions" (assume))
+    (145 "Assumptions" (assume) "srfi-145" #t)
     ;; 146  Mappings
     ;; 147  Custom macro transformers
     ;; 148  Eager syntax-rules
@@ -202,7 +202,8 @@
     ;; 159  Combinator Formatting
     (160 "Homogeneous numeric vector libraries" (homogeneous-vectors) "srfi-160")
     (161 "Unifiable Boxes" (unifiable-boxes) "srfi-161")
-    (162 "Comparators sublibrary" (comparators) "srfi-128") ;; this is included in SRFI-128 implementation
+    (162 "Comparators sublibrary" (comparators)
+         "srfi-128") ;; this is included in SRFI-128 implementation
     ;; 163  Enhanced array literals
     ;; 164  Enhanced multi-dimensional Arrays
     ;; 165  The Environment Monad
@@ -233,7 +234,7 @@
          (maybe-either) "srfi-189")
     (190 "Coroutines Generators" (coroutine-generators) "srfi-190")
     ;;191  ....... withdrawn
-    ;; FIXME: (192 "Port Positioning" (port-positioning))
+    (192 "Port Positioning" (port-positioning) "srfi-192" #t)
     (193 "Command line" (command-line) "srfi-193" #t)
     ;; 194 Random data generators
     (195 "Multiple-value boxes" (multiple-value-boxes) "srfi-195" #t)
@@ -302,7 +303,7 @@
     (258 "Uninterned symbols" (uninterned-symbols) "srfi-258")
     ;; 259 Tagged procedures with type safety (draft)
     (260 "Generated symbols" (generated-symbols) "srfi-260")
-    ;; FIXME (261 "Portable SRFI Library Reference")
+    (261 "Portable SRFI Library Reference" () "srfi-261" #t)
     ;; 262 Extensible pattern matcher
     ;; 263 Prototype Object System
     (264 "String Syntax for Scheme Regular Expressions" (string-regexps) "srfi-264")
