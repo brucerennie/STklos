@@ -2,7 +2,7 @@
 ;;;;
 ;;;; refman-lib.stk         -- Library for Reference Manual documentation
 ;;;;
-;;;; Copyright © 2022-2023 Erick Gallesio <eg@stklos.net>
+;;;; Copyright © 2022-2026 Erick Gallesio <eg@stklos.net>
 ;;;;
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -59,6 +59,12 @@
     (unless info
       (error "link-srfi: SRFI ~S not in database!!" n))
     (%srfi-file info)))
+
+(define (srfi-embedded? n)
+  (let ((info (find-srfi n)))
+    (unless info
+      (error "link-srfi: SRFI ~S not in database!!" n))
+    (%srfi-embedded info)))
 
 (define (srfi-subsection n)
   (let ((infos (find-srfi n)))
