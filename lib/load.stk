@@ -271,13 +271,10 @@ doc>
   (unless (string? fn)
     (error '%guess-pathname "path must be a string (it was ~s)" fn))
 
-  (if (regexp-match "\.?\.?/" fn)
-      (or ;; First try to load file as given by user
-          (try fn)
-          ;; try to load file with suffix
-          (try-load-with-suffixes fn suffixes)
-          ;; try to load file in path
-          (try-load-from-path fn paths suffixes))
+  (if (regexp-match "^\.?\.?/" fn)
+      ;; fn starts with "./" "../" "/" 
+      (or (try fn)         ;                    ;; Try to load file as given by user
+          (try-load-with-suffixes fn suffixes)) ;; Try to add a suffix
       ;; Not a file which starts with './' '../' or '/'. Use the path
       (try-load-from-path fn paths suffixes)))
 
