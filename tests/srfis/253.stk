@@ -86,10 +86,17 @@
 ;; It is an error when predicate doesn't pass, but it doesn't have to
 ;; throw errors. Disable depending on implementation.
 (test/error "check-arg.35" (check-arg-true (lambda (a) (> a 3)) 0))
-
+;; check-impl? syntax from SRFI 273
+(test "check-arg.36" #t (check-arg-true (check-impl? <number>) 3.8))
+(test "check-arg.37" #t (check-arg-true (check-impl? <pair>) '(1 2 3)))
+(test "check-arg.38" #t (check-arg-true (check-impl? <string>) "hello"))
+(test "check-arg.39" #t (check-arg-true (check-impl? <symbol>) 'hello))
+(test "check-arg.40" #t (check-arg-true (check-impl? <number>) 3+2i))
+(test "check-arg.41" #t (check-arg-true (check-impl? <number>) 3))
+(test/error "check-arg.42" (check-arg-true (check-impl? <number>) "string"))
 
 ;; Syntax checks
-; [eg] following test seems OK to me => commented
+                                        ; [eg] following test seems OK to me => commented
 ;;(test/error "check-arg.36" (begin (check-arg integer? 3 'testing-caller-arg) #t))
 (test/compile-error "check-arg.37" (check-arg))
 
