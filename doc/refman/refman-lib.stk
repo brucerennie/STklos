@@ -29,7 +29,7 @@
 ;;;
 ;;; SRFIs
 ;;;
-(load "../../lib/srfis.stk")
+(load "../../etc/srfis.stk")
 
 (define (make-srfi-url n)
   (format "http://srfi.schemers.org/srfi-~A/srfi-~A.html" n n))

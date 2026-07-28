@@ -189,10 +189,11 @@ lib/srfi: lib/scheme lib/stklos lib/streams
 #
 # SRFIs support
 #
-# If ./srfis.stk we must rebuild
+# If ./srfis.stk is touched we must rebuild
 #     - srfis-data.scm (used by SRFI0 and features)
-srfis-data.scm: srfis.stk stklos/getopt.ostk
-	$(STKLOS_BINARY) -c -q -l srfis.stk \
+#     - the text file SUPPORTED-SRFIS at toplevel
+srfis-data.scm: ../etc/srfis.stk stklos/getopt.ostk
+	$(STKLOS_BINARY) -c -q -l ../etc/srfis.stk \
 	                 -f ../utils/update-srfi-list.stk \
                      -- --internal > $@
 	(cd .. && $(MAKE) SUPPORTED-SRFIS)

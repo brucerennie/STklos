@@ -1,6 +1,6 @@
 # Makefile.am for STklos
 #
-# Copyright © 1999-2023 Erick Gallesio <eg@stklos.net>
+# Copyright © 1999-2026 Erick Gallesio <eg@stklos.net>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -62,11 +62,11 @@ install-doc: install-base
 # Update the list of supported SRFIs
 # This target is used by lib/Makefile. It needs a running STklos
 # Dont call it directly
-SUPPORTED-SRFIS: lib/srfis.stk
+SUPPORTED-SRFIS: etc/srfis.stk
 	@echo "Updating list of supported SRFIs ... "
-	sed -e '/- SRFI/d' $@ > $@.tmp                         && \
-	$(STKLOS_BINARY) $(STKLOS_FLAGS) -I ./lib -l srfis.stk    \
-		-f utils/update-srfi-list.stk >> $@.tmp            && \
+	sed -e '/- SRFI/d' $@ > $@.tmp                             && \
+	$(STKLOS_BINARY) $(STKLOS_FLAGS) -I ./lib -l etc/srfis.stk    \
+		-f utils/update-srfi-list.stk >> $@.tmp                && \
 	mv -f  $@.tmp $@
 
 clean-am:

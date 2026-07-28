@@ -23,3 +23,8 @@ templates, for some advanced work in C with STklos.
 
     **IMPORTANT**: this program must be updated to be run
     on recent versions of STklos.
+
+
+The file **srfi.stk** is the "database" of implemented SRFIs. When this file is modified,
+the `SUPPORTED-SRFI` (a text file describing the supported SRFis of the current version)
+and `lib/srfi-data.scm` (a list of SRFIs and their feature names) are rebuilt.

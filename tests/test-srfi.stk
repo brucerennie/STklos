@@ -32,7 +32,7 @@
 ;;;
 ;;; Run all the tests in "./srfi" directory
 ;;
-(load "../lib/srfis.stk")
+(load "../etc/srfis.stk")
 
 (define trace-srfi
   (let ((count 0))
