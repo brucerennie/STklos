@@ -28020,32 +28020,50 @@ whereas an <em>external</em> needs to be loaded before use.</p>
 <div class="sect2">
 <h3 id="doc_using_a_srfi">13.2. Using a SRFI</h3>
 <div class="paragraph">
-<p>Using a particular SRFI can be done with the special form
-<code>cond-expand</code> defined in <strong><a href="http://srfi.schemers.org/srfi-0/srfi-0.html">SRFI-0</a></strong> which is fully supported
-by <strong><em>STklos</em></strong>. This form accepts features identifiers which are of the
-form <strong><em>srfi-n</em></strong> where <strong><em>n</em></strong> represents the number of the SRFI
-supported by the implementation (for instance <strong><em>srfi-1</em></strong> or
+<p>Importing a SRFI is the simplest way to use it. For instance, to use
+<strong><a href="http://srfi.schemers.org/srfi-1/srfi-1.html">SRFI-1</a></strong>, one can just do:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="scheme"><span class="p">(</span><span class="nf">import</span> <span class="p">(</span><span class="nf">srfi</span> <span class="mi">1</span><span class="p">))</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>eventually load some code (if the SRFI is an external SRFI — see below)</p>
+</li>
+<li>
+<p>import the exported symbols of <code>(srfi 1)</code> in the current module.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Another way to use a SRFI can be done with the special form
+<code>cond-expand</code> defined in <strong><a href="http://srfi.schemers.org/srfi-0/srfi-0.html">SRFI-0</a></strong> which is fully
+supported by <strong><em>STklos</em></strong>. This form accepts features identifiers which
+are of the form <strong><em>srfi-n</em></strong> where <strong><em>n</em></strong> represents the number of the
+SRFI supported by the implementation (for instance <strong><em>srfi-1</em></strong> or
 <strong><em>srfi-30</em></strong>).</p>
 </div>
 <div class="paragraph">
-<p>For instance, to use <strong><em>srfi-n</em></strong>, you can use</p>
+<p>For instance, to use <strong><a href="http://srfi.schemers.org/srfi-1/srfi-1.html">SRFI-1</a></strong> (<em>List Library</em>), you can use</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="scheme"><span class="p">(</span><span class="nf">cond-expand</span>
- <span class="p">(</span><span class="nf">srfi-n</span><span class="p">))</span></code></pre>
+ <span class="p">(</span><span class="nf">srfi-1</span><span class="p">))</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This forms does nothing if <strong><em>srfi-n</em></strong> is an embedded SRFI and ensures that all
-the files needed by this SRFI will be properly loaded if it is an external
-SRFI.</p>
-</div>
-<div class="paragraph">
-<p><strong><em>STklos</em></strong> also offers the primitive <strong>require-feature</strong> which ensures
-(eventually) the loading of files needed to use a given SRFI. This primitive
-accepts several forms to ensure that the SRFI can be used.  For instance, to
-use <strong><a href="http://srfi.schemers.org/srfi-1/srfi-1.html">SRFI-1</a></strong> (<em>List Library</em>), the following forms are possible:</p>
+<p><strong><em>STklos</em></strong> also offers the (deprecated) primitive <strong>require-feature</strong>
+which ensures (eventually) the loading of files needed to use a given
+SRFI. This primitive accepts several forms to ensure that the SRFI can
+be used.  For instance, to use <strong><a href="http://srfi.schemers.org/srfi-1/srfi-1.html">SRFI-1</a></strong>, the following forms
+are possible:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -28063,8 +28081,7 @@ use <strong><a href="http://srfi.schemers.org/srfi-1/srfi-1.html">SRFI-1</a></st
 <h4 id="doc_embedded_srfis">13.2.1. Embedded SRFIs</h4>
 <div class="paragraph">
 <p>As said before, an <em>embedded</em> SRFI can be used directly without loading a
-support file. (Note that using <strong>require-feature</strong> works too
-and permits to ignore if the SRFI is embedded).</p>
+support file.</p>
 </div>
 <div class="paragraph">
 <p><strong>List of embedded SRFIs:</strong>
@@ -28075,8 +28092,7 @@ and permits to ignore if the SRFI is embedded).</p>
 <h4 id="doc_external_srfis">13.2.2. External SRFIs</h4>
 <div class="paragraph">
 <p>An external SRFI needs to load at least one external file. This can be done
-with <strong>require</strong> or <strong>require-feature</strong>. As with embedded SRFIS, using
-<strong>require-feature</strong> permits to ignore if the SRFI is external.</p>
+with <strong>import</strong>, <strong>cond-expand</strong> or <strong>require-feature</strong>, as described above.</p>
 </div>
 <div class="paragraph">
 <p><strong>List of external SRFIs:</strong>
@@ -28088,15 +28104,17 @@ with <strong>require</strong> or <strong>require-feature</strong>. As with embed
 <div class="paragraph">
 <p>For some SRFIs, a feature identifier is associated (see the list of defined
 feature identifiers in <a href="#feature_identifiers">Table 2</a>). These SRFIs can be used by
-using their feature identifier, rather than their number .</p>
+using their feature identifier, rather than their number.</p>
 </div>
 <div class="paragraph">
-<p>For instance, to use <code>SRFI-1</code>, whose associated feature identifier is <code>lists</code>,
-one can use the following form:</p>
+<p>For instance, to use <strong><a href="http://srfi.schemers.org/srfi-1/srfi-1.html">SRFI-1</a></strong>, whose associated feature identifier is <code>lists</code>,
+one can use one of the following forms:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="scheme"><span class="p">(</span><span class="nf">import</span> <span class="p">(</span><span class="nf">srfi</span> <span class="nv">lists</span><span class="p">))</span>    <span class="c1">;; equivalent to (import (srfi 1))</span></code></pre>
+<pre class="rouge highlight"><code data-lang="scheme"><span class="p">(</span><span class="nf">import</span> <span class="p">(</span><span class="nf">srfi</span> <span class="nv">lists</span><span class="p">))</span>    <span class="c1">;; equivalent to (import (srfi 1))</span>
+<span class="p">(</span><span class="nf">cond-expand</span> <span class="p">(</span><span class="nf">lists</span><span class="p">))</span>
+<span class="p">(</span><span class="nf">require-feature</span> <span class="ss">'lists</span><span class="p">)</span> <span class="c1">;; or "lists"</span></code></pre>
 </div>
 </div>
 <table id="feature_identifiers" class="tableblock frame-all grid-all stretch small">

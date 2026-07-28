@@ -42,28 +42,34 @@ The following SRFIS are implemented:
 
 
 === Using a SRFI
-Using a particular SRFI can be done with the special form
-`cond-expand` defined in {{quick-link-srfi 0}} which is fully supported
-by {{stklos}}. This form accepts features identifiers which are of the
-form *_srfi-n_* where *_n_* represents the number of the SRFI
-supported by the implementation (for instance *_srfi-1_* or
+Importing a SRFI is the simplest way to use it. For instance, to use
+{{quick-link-srfi 1}}, one can just do:
+```scheme
+(import (srfi 1))
+```
+This will
+
+1. eventually load some code (if the SRFI is an external SRFI — see below)
+2. import the exported symbols of `(srfi 1)` in the current module.
+
+Another way to use a SRFI can be done with the special form
+`cond-expand` defined in {{quick-link-srfi 0}} which is fully
+supported by {{stklos}}. This form accepts features identifiers which
+are of the form *_srfi-n_* where *_n_* represents the number of the
+SRFI supported by the implementation (for instance *_srfi-1_* or
 *_srfi-30_*).
 
-For instance, to use *_srfi-n_*, you can use
+For instance, to use {{link-srfi 1}}, you can use
 ```scheme
 (cond-expand
- (srfi-n))
+ (srfi-1))
 ```
 
-
-This forms does nothing if *_srfi-n_* is an embedded SRFI and ensures that all
-the files needed by this SRFI will be properly loaded if it is an external
-SRFI.
-
-{{stklos}} also offers the primitive *require-feature* which ensures
-(eventually) the loading of files needed to use a given SRFI. This primitive
-accepts several forms to ensure that the SRFI can be used.  For instance, to
-use {{link-srfi 1}}, the following forms are possible:
+{{stklos}} also offers the (deprecated) primitive *require-feature*
+which ensures (eventually) the loading of files needed to use a given
+SRFI. This primitive accepts several forms to ensure that the SRFI can
+be used.  For instance, to use {{quick-link-srfi 1}}, the following forms
+are possible:
 
 ```scheme
 (require-feature 'srfi-1)
@@ -76,11 +82,9 @@ The list of the aliases defined for the supported SRFIs is given in
 <<feature_identifiers>>.
 
 
-
 ==== Embedded SRFIs
 As said before, an _embedded_ SRFI can be used directly without loading a
-support file. (Note that using *require-feature* works too
-and permits to ignore if the SRFI is embedded).
+support file.
 
 *List of embedded SRFIs:*
  {{for-each (lambda (x)
@@ -93,8 +97,8 @@ and permits to ignore if the SRFI is embedded).
 ==== External SRFIs
 
 An external SRFI needs to load at least one external file. This can be done
-with *require* or *require-feature*. As with embedded SRFIS, using
-*require-feature* permits to ignore if the SRFI is external.
+with *import*, *cond-expand* or *require-feature*, as described above.
+
 
 *List of external SRFIs:*
 {{for-each (lambda (x)
@@ -108,13 +112,15 @@ with *require* or *require-feature*. As with embedded SRFIS, using
 
 For some SRFIs, a feature identifier is associated (see the list of defined
 feature identifiers in <<feature_identifiers>>). These SRFIs can be used by
-using their feature identifier, rather than their number . 
+using their feature identifier, rather than their number.
 
-For instance, to use `SRFI-1`, whose associated feature identifier is `lists`,
-one can use the following form:
+For instance, to use {{quick-link-srfi 1}}, whose associated feature identifier is `lists`,
+one can use one of the following forms:
 
 ```scheme
 (import (srfi lists))    ;; equivalent to (import (srfi 1))
+(cond-expand (lists))
+(require-feature 'lists) ;; or "lists"
 ```
 
 
