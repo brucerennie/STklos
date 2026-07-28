@@ -54,12 +54,6 @@
       (error "link-srfi: SRFI ~S not in database!!" n))
     (%srfi-title info)))
 
-(define (srfi-file n)
-  (let ((info (find-srfi n)))
-    (unless info
-      (error "link-srfi: SRFI ~S not in database!!" n))
-    (%srfi-file info)))
-
 (define (srfi-embedded? n)
   (let ((info (find-srfi n)))
     (unless info
