@@ -128,20 +128,15 @@ one can use one of the following forms:
 .Feature identifiers
 [.small]
 |====
-|symbol| require SRFI(s)
+|symbol| import SRFI
 
-{{for-each (lambda (x)                              ;; PRINT THE SRFIS
+{{for-each (lambda (x)                              ;; PRINT THE SRFIs
              (let* ((nb    (car x))
                     (info  (find-srfi nb))
                     (names (%srfi-names info)))
                 (when (> (length names) 1)
                   (printf "| ~a | ~a\n" (cadr names) (car names)))))
            *srfi-database*}}
-{{for-each (lambda (x)                              ;; PRINT THE ALIASES
-             (printf "|~a |" (car x))
-             (for-each (lambda (f) (printf "~a " f)) (cdr x))
-             (printf "\n"))
-           *srfi-shortcuts*}}
 |====
 
 
@@ -550,6 +545,13 @@ adds the functions `codeset-list` and `make-codeset`.
 
 {{insertdoc 'codeset-list}}
 {{insertdoc 'make-codeset}}
+
+
+// **** SRFI-261
+{{srfi-subsection 261}}
+
+{{quick-link-srfi 261}} is fully supported. It defines some named feature for existing
+SRFIs. Most of the names used in this SRFI are reused in {{stklos}}. 
 
 
 :sectnums:

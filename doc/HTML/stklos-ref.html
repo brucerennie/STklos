@@ -23379,22 +23379,21 @@ is always allocated.</p>
 
 <strong><em>STklos</em></strong> implements all the conditions types which are defined in
 <strong><a href="http://srfi.schemers.org/srfi-35/srfi-35.html">SRFI-35</a></strong> (<em>Conditions</em>) and <strong><a href="http://srfi.schemers.org/srfi-36/srfi-36.html">SRFI-36</a></strong> (<em>I/O Conditions</em>).
-However, the access functions which are (implicitely) defined
-in those SRFIs are only available if the file <code>"conditions"</code> is
-required. This can be done with the call:</p>
+To access, to the functions and conditions of these SRFI, you need
+to import both libraries <code>(srfi 35)</code> and <code>(srfi 36)</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="scheme"><span class="p">(</span><span class="nf">import</span> <span class="p">(</span><span class="nf">srfi</span> <span class="mi">35</span><span class="p">)</span> <span class="p">(</span><span class="nf">srfi</span> <span class="mi">36</span><span class="p">))</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, a quicker (and less portable) way the access to these symbols
+can be to require the file <code>"conditions"</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="scheme"><span class="p">(</span><span class="nf">require</span> <span class="s">"conditions"</span><span class="p">)</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Another way to have access to the hierarchy of the <strong><a href="http://srfi.schemers.org/srfi-35/srfi-35.html">SRFI-35</a></strong> (<em>Conditions</em>)
-and <strong><a href="http://srfi.schemers.org/srfi-36/srfi-36.html">SRFI-36</a></strong> (<em>I/O Conditions</em>) condition:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="scheme"><span class="p">(</span><span class="nf">require-extension</span> <span class="nv">conditions</span><span class="p">)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -28085,7 +28084,7 @@ support file.</p>
 </div>
 <div class="paragraph">
 <p><strong>List of embedded SRFIs:</strong>
- <code>srfi-0</code> <code>srfi-2</code> <code>srfi-6</code> <code>srfi-8</code> <code>srfi-9</code> <code>srfi-10</code> <code>srfi-11</code> <code>srfi-15</code> <code>srfi-16</code> <code>srfi-18</code> <code>srfi-23</code> <code>srfi-28</code> <code>srfi-30</code> <code>srfi-34</code> <code>srfi-39</code> <code>srfi-87</code> <code>srfi-88</code> <code>srfi-98</code> <code>srfi-111</code> <code>srfi-112</code> <code>srfi-118</code> <code>srfi-138</code> <code>srfi-143</code> <code>srfi-145</code> <code>srfi-169</code> <code>srfi-176</code> <code>srfi-192</code> <code>srfi-193</code> <code>srfi-195</code> <code>srfi-208</code> <code>srfi-219</code> <code>srfi-261</code></p>
+ <code>srfi-0</code> <code>srfi-2</code> <code>srfi-6</code> <code>srfi-8</code> <code>srfi-9</code> <code>srfi-10</code> <code>srfi-11</code> <code>srfi-15</code> <code>srfi-16</code> <code>srfi-18</code> <code>srfi-23</code> <code>srfi-28</code> <code>srfi-30</code> <code>srfi-34</code> <code>srfi-38</code> <code>srfi-39</code> <code>srfi-45</code> <code>srfi-46</code> <code>srfi-55</code> <code>srfi-87</code> <code>srfi-88</code> <code>srfi-98</code> <code>srfi-111</code> <code>srfi-112</code> <code>srfi-118</code> <code>srfi-138</code> <code>srfi-143</code> <code>srfi-145</code> <code>srfi-169</code> <code>srfi-176</code> <code>srfi-192</code> <code>srfi-193</code> <code>srfi-195</code> <code>srfi-208</code> <code>srfi-219</code> <code>srfi-261</code></p>
 </div>
 </div>
 <div class="sect3">
@@ -28096,7 +28095,7 @@ with <strong>import</strong>, <strong>cond-expand</strong> or <strong>require-fe
 </div>
 <div class="paragraph">
 <p><strong>List of external SRFIs:</strong>
-<code>srfi-1</code> <code>srfi-4</code> <code>srfi-5</code> <code>srfi-7</code> <code>srfi-13</code> <code>srfi-14</code> <code>srfi-17</code> <code>srfi-19</code> <code>srfi-22</code> <code>srfi-25</code> <code>srfi-26</code> <code>srfi-27</code> <code>srfi-29</code> <code>srfi-31</code> <code>srfi-35</code> <code>srfi-36</code> <code>srfi-37</code> <code>srfi-38</code> <code>srfi-41</code> <code>srfi-43</code> <code>srfi-45</code> <code>srfi-46</code> <code>srfi-48</code> <code>srfi-51</code> <code>srfi-54</code> <code>srfi-55</code> <code>srfi-59</code> <code>srfi-60</code> <code>srfi-61</code> <code>srfi-62</code> <code>srfi-64</code> <code>srfi-66</code> <code>srfi-69</code> <code>srfi-70</code> <code>srfi-74</code> <code>srfi-89</code> <code>srfi-94</code> <code>srfi-95</code> <code>srfi-96</code> <code>srfi-100</code> <code>srfi-101</code> <code>srfi-113</code> <code>srfi-115</code> <code>srfi-116</code> <code>srfi-117</code> <code>srfi-125</code> <code>srfi-127</code> <code>srfi-128</code> <code>srfi-129</code> <code>srfi-130</code> <code>srfi-132</code> <code>srfi-133</code> <code>srfi-134</code> <code>srfi-135</code> <code>srfi-137</code> <code>srfi-141</code> <code>srfi-144</code> <code>srfi-151</code> <code>srfi-152</code> <code>srfi-154</code> <code>srfi-156</code> <code>srfi-158</code> <code>srfi-160</code> <code>srfi-161</code> <code>srfi-162</code> <code>srfi-170</code> <code>srfi-171</code> <code>srfi-173</code> <code>srfi-174</code> <code>srfi-175</code> <code>srfi-178</code> <code>srfi-180</code> <code>srfi-185</code> <code>srfi-189</code> <code>srfi-190</code> <code>srfi-196</code> <code>srfi-207</code> <code>srfi-214</code> <code>srfi-215</code> <code>srfi-216</code> <code>srfi-217</code> <code>srfi-221</code> <code>srfi-222</code> <code>srfi-223</code> <code>srfi-224</code> <code>srfi-225</code> <code>srfi-227</code> <code>srfi-228</code> <code>srfi-229</code> <code>srfi-230</code> <code>srfi-232</code> <code>srfi-233</code> <code>srfi-234</code> <code>srfi-235</code> <code>srfi-236</code> <code>srfi-238</code> <code>srfi-239</code> <code>srfi-244</code> <code>srfi-253</code> <code>srfi-258</code> <code>srfi-260</code> <code>srfi-264</code></p>
+<code>srfi-1</code> <code>srfi-4</code> <code>srfi-5</code> <code>srfi-7</code> <code>srfi-13</code> <code>srfi-14</code> <code>srfi-17</code> <code>srfi-19</code> <code>srfi-22</code> <code>srfi-25</code> <code>srfi-26</code> <code>srfi-27</code> <code>srfi-29</code> <code>srfi-31</code> <code>srfi-35</code> <code>srfi-36</code> <code>srfi-37</code> <code>srfi-41</code> <code>srfi-43</code> <code>srfi-48</code> <code>srfi-51</code> <code>srfi-54</code> <code>srfi-59</code> <code>srfi-60</code> <code>srfi-61</code> <code>srfi-62</code> <code>srfi-64</code> <code>srfi-66</code> <code>srfi-69</code> <code>srfi-70</code> <code>srfi-74</code> <code>srfi-89</code> <code>srfi-94</code> <code>srfi-95</code> <code>srfi-96</code> <code>srfi-100</code> <code>srfi-101</code> <code>srfi-113</code> <code>srfi-115</code> <code>srfi-116</code> <code>srfi-117</code> <code>srfi-125</code> <code>srfi-127</code> <code>srfi-128</code> <code>srfi-129</code> <code>srfi-130</code> <code>srfi-132</code> <code>srfi-133</code> <code>srfi-134</code> <code>srfi-135</code> <code>srfi-137</code> <code>srfi-141</code> <code>srfi-144</code> <code>srfi-151</code> <code>srfi-152</code> <code>srfi-154</code> <code>srfi-156</code> <code>srfi-158</code> <code>srfi-160</code> <code>srfi-161</code> <code>srfi-162</code> <code>srfi-170</code> <code>srfi-171</code> <code>srfi-173</code> <code>srfi-174</code> <code>srfi-175</code> <code>srfi-178</code> <code>srfi-180</code> <code>srfi-185</code> <code>srfi-189</code> <code>srfi-190</code> <code>srfi-196</code> <code>srfi-207</code> <code>srfi-214</code> <code>srfi-215</code> <code>srfi-216</code> <code>srfi-217</code> <code>srfi-221</code> <code>srfi-222</code> <code>srfi-223</code> <code>srfi-224</code> <code>srfi-225</code> <code>srfi-227</code> <code>srfi-228</code> <code>srfi-229</code> <code>srfi-230</code> <code>srfi-232</code> <code>srfi-233</code> <code>srfi-234</code> <code>srfi-235</code> <code>srfi-236</code> <code>srfi-238</code> <code>srfi-239</code> <code>srfi-244</code> <code>srfi-253</code> <code>srfi-258</code> <code>srfi-260</code> <code>srfi-264</code></p>
 </div>
 </div>
 <div class="sect3">
@@ -28126,7 +28125,7 @@ one can use one of the following forms:</p>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">symbol</th>
-<th class="tableblock halign-left valign-top">require SRFI(s)</th>
+<th class="tableblock halign-left valign-top">import SRFI</th>
 </tr>
 </thead>
 <tbody>
@@ -28569,14 +28568,6 @@ one can use one of the following forms:</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">string-regexps</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">srfi-264</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">conditions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">srfi-35 srfi-36</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">generators</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">srfi-158 srfi-190</p></td>
 </tr>
 </tbody>
 </table>
@@ -32199,6 +32190,16 @@ is a list of triplets (code-number symbol message) where <code>symbol</code> and
                      <span class="p">(</span><span class="nf">3</span>   <span class="nv">MAYBE</span> <span class="s">"To be determined"</span><span class="p">)</span>
                      <span class="p">(</span><span class="nf">404</span> <span class="no">#f</span>    <span class="s">"Not found"</span><span class="p">))))</span>      <span class="c1">; No symbolic name</span></code></pre>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="doc_srfi_261portable_srfi_library_reference">srfi-261&#8201;&#8212;&#8201;Portable SRFI Library Reference</h4>
+<div class="paragraph">
+<p></p>
+</div>
+<div class="paragraph">
+<p><strong><a href="http://srfi.schemers.org/srfi-261/srfi-261.html">SRFI-261</a></strong> is fully supported. It defines some named feature for existing
+SRFIs. Most of the names used in this SRFI are reused in <strong><em>STklos</em></strong>.</p>
 </div>
 </div>
 </div>

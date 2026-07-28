@@ -29,7 +29,7 @@
 ;;;
 ;;; SRFIs
 ;;;
-(load "../../lib/srfis.stk")
+(load "../../etc/srfis.stk")
 
 (define (make-srfi-url n)
   (format "http://srfi.schemers.org/srfi-~A/srfi-~A.html" n n))
@@ -53,12 +53,6 @@
     (unless info
       (error "link-srfi: SRFI ~S not in database!!" n))
     (%srfi-title info)))
-
-(define (srfi-file n)
-  (let ((info (find-srfi n)))
-    (unless info
-      (error "link-srfi: SRFI ~S not in database!!" n))
-    (%srfi-file info)))
 
 (define (srfi-embedded? n)
   (let ((info (find-srfi n)))
