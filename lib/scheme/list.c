@@ -130,10 +130,10 @@ DEFINE_PRIMITIVE("%cars+cdrs/notest", cars_cdrs_notest, subr1, (SCM lists)) {
 DEFINE_PRIMITIVE("length+", length_plus, subr1, (SCM list)) {
   int len;
   SCM res = STk_list_type_and_length(list, &len);
-
-  if (res == NULL) error_bad_list(list);           /* not a list */
-  if (res == STk_nil) return MAKE_INT(len);        /* proper */
-  return STk_false;                                /* improper (dotted/circular) */
+  
+  if (res == NULL) error_bad_list(list);                   /* not a list */
+  if (res == STk_nil || !CONSP(res)) return MAKE_INT(len); /* proper or dotted */
+  return STk_false;                                        /* circular */
 }
 
 

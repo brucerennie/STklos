@@ -203,6 +203,8 @@
 
 (test "srfi-1-65" 4 (length+ '(1 2 3 4)))
 
+(test "srfi-1-65.bis"  4 (length+ '(1 2 3 4 . 5)))
+
 (test "srfi-1-66" #t (let ((x (list 1 2))
                (y (list 3 4))
                (z (list 5 6)))
