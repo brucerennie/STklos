@@ -1307,18 +1307,12 @@ static SCM keyword_colon_position_get(void)
 
 static SCM keyword_colon_position_set(SCM value)
 {
-  SCM port, info;
-
   if (SYMBOLP(value))
     colon_pos = colon_position_value(SYMBOL_PNAME(value));
   else if (KEYWORDP(value))
     colon_pos = colon_position_value(KEYWORD_PNAME(value));
   else
     STk_error("expected a symbol or a keyword as parameter value");
-
-  /* Change the way keywords are read in the reading port */
-  info = STk_current_load_file_and_port();
-  port = (info == STk_false) ? STk_current_input_port(): CDR(info);
 
   return keyword_colon_position_get();
 }
