@@ -1,7 +1,7 @@
 ;;;;
 ;;;; srfis.stk  - The list of STklos implemented SRFIs and some utilities
 ;;;;
-;;;; Copyright © 2020-2026 Erick Gallesio <eg@stklos.net>
+;;;; Copyright © 2020-2024 Erick Gallesio <eg@stklos.net>
 ;;;;
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -305,6 +305,18 @@
     ;; 262 Extensible pattern matcher
     ;; 263 Prototype Object System
     (264 "String Syntax for Scheme Regular Expressions" (string-regexps))
+    ;; 265 The CFG Language
+    ;; 266 The expr syntax
+    (267 "Raw String Syntax)
+    ;; 268 Multidimensional Array Literals
+    ;; 269 Portable Test Definitions
+    ;; 270 Hexadecimal Floating-Point Constants
+    ;; 271 Random port libraries
+    ;; 272 Pretty Printing
+    ;; 273 Extensions to Data (Type-)Checking
+    ;; 274 Extended List Conversion Procedures
+    ;; 275 URIs and IRIs
+    ;; 276 Type-specific Flonum Libraries
     ))
 
 ;; ;; Some shortcuts to add to the SRFI-features which permit to load seveal file

@@ -150,3 +150,4 @@ implemented in latest version is available at https://stklos.net/srfi.html):
     - SRFI-260: Generated symbols
     - SRFI-261: Portable SRFI Library Reference
     - SRFI-264: String Syntax for Scheme Regular Expressions
+    - SRFI-267: Raw String Syntax
