@@ -1,7 +1,7 @@
 ;;;;
 ;;;; srfis.stk  - The list of STklos implemented SRFIs and some utilities
 ;;;;
-;;;; Copyright © 2020-2024 Erick Gallesio <eg@stklos.net>
+;;;; Copyright © 2020-2026 Erick Gallesio <eg@stklos.net>
 ;;;;
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -307,7 +307,7 @@
     (264 "String Syntax for Scheme Regular Expressions" (string-regexps))
     ;; 265 The CFG Language
     ;; 266 The expr syntax
-    (267 "Raw String Syntax)
+    (267 "Raw String Syntax")
     ;; 268 Multidimensional Array Literals
     ;; 269 Portable Test Definitions
     ;; 270 Hexadecimal Floating-Point Constants

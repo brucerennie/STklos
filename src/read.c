@@ -971,7 +971,7 @@ static SCM read_sharp(SCM port, struct read_context *ctx, int inlist)
   int c = STk_getc(port);
 
   switch(c) {
-    case '"':  return read_srfi_267(port, ctx);
+    //    case '"':  return read_srfi_267(port, ctx);
 
     case '\\': return read_char(port, STk_getc(port));
 
