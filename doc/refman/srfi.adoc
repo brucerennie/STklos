@@ -551,7 +551,15 @@ adds the functions `codeset-list` and `make-codeset`.
 {{srfi-subsection 261}}
 
 {{quick-link-srfi 261}} is fully supported. It defines some named feature for existing
-SRFIs. Most of the names used in this SRFI are reused in {{stklos}}. 
+SRFIs. Most of the names used in this SRFI are reused in {{stklos}}.
+
+
+// **** SRFI-267
+{{srfi-subsection 267}}
+((("Raw string")))
+
+{{quick-link-srfi 267}} is fully supported. It defines a syntax for raw strings which are similar
+to standard {{stklos}} *here strings*.
 
 
 :sectnums:

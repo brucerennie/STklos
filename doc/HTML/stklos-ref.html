@@ -1042,6 +1042,7 @@ keywords and optional arguments, to be compatible with DSSSL lambdas
 <div class="paragraph">
 <p>
 
+
 Here strings permit to easily enter multilines strings in programs.
 The sequence of characters <code>&#35;&lt;&lt;</code> starts a here string. The characters
 following this sequence <code>&#35;&lt;&lt;</code> until a newline character define a terminator for
@@ -1068,6 +1069,38 @@ No escape sequences are recognized between the starting and terminating lines.</
 <div class="content">
 <pre class="rouge highlight"><code data-lang="scheme"><span class="s">"abcndefn  ghi"</span></code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>This notation can also be used to ease the writing of string which contains weird characters:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>#&lt;&lt;END
+x= \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}  "See Fig. 2"
+END</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>is equivalent to the string</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="scheme"><span class="s">"x= \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}  \"See Fig. 2\""</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<strong><em>STklos</em></strong> also implements <strong>raw strings</strong> as defined in <strong><a href="http://srfi.schemers.org/srfi-267/srfi-267.html">SRFI-267</a></strong> (<em>Raw String Syntax</em>). The purpose of raw strings is identical of STklos <strong>here strings</strong>. For
+instance, the previous here string could be written as<br>
+<code>#""x= \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}   "See Fig. 2"""</code>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -27869,7 +27902,7 @@ SRFI <a href="http://srfi.schemers.org">site</a>.</p>
 <div class="sect2">
 <h3 id="doc_supported_srfis">13.1. Supported SRFIs</h3>
 <div class="paragraph">
-<p><strong><em>STklos</em></strong> supports <strong>134</strong> finalized SRFIS.
+<p><strong><em>STklos</em></strong> supports <strong>135</strong> finalized SRFIS.
 Some of these SRFIS are <em>embedded</em> and some are <em>external</em>.</p>
 </div>
 <div class="paragraph">
@@ -28013,7 +28046,8 @@ whereas an <em>external</em> needs to be loaded before use.</p>
 -  <strong><a href="http://srfi.schemers.org/srfi-258/srfi-258.html">SRFI-258</a></strong>&#8201;&#8212;&#8201;<em>Uninterned symbols</em><br>
 -  <strong><a href="http://srfi.schemers.org/srfi-260/srfi-260.html">SRFI-260</a></strong>&#8201;&#8212;&#8201;<em>Generated symbols</em><br>
 -  <strong><a href="http://srfi.schemers.org/srfi-261/srfi-261.html">SRFI-261</a></strong>&#8201;&#8212;&#8201;<em>Portable SRFI Library Reference</em><br>
--  <strong><a href="http://srfi.schemers.org/srfi-264/srfi-264.html">SRFI-264</a></strong>&#8201;&#8212;&#8201;<em>String Syntax for Scheme Regular Expressions</em><br></p>
+-  <strong><a href="http://srfi.schemers.org/srfi-264/srfi-264.html">SRFI-264</a></strong>&#8201;&#8212;&#8201;<em>String Syntax for Scheme Regular Expressions</em><br>
+-  <strong><a href="http://srfi.schemers.org/srfi-267/srfi-267.html">SRFI-267</a></strong>&#8201;&#8212;&#8201;<em>Raw String Syntax</em><br></p>
 </div>
 </div>
 <div class="sect2">
@@ -28084,7 +28118,7 @@ support file.</p>
 </div>
 <div class="paragraph">
 <p><strong>List of embedded SRFIs:</strong>
- <code>srfi-0</code> <code>srfi-2</code> <code>srfi-6</code> <code>srfi-8</code> <code>srfi-9</code> <code>srfi-10</code> <code>srfi-11</code> <code>srfi-15</code> <code>srfi-16</code> <code>srfi-18</code> <code>srfi-23</code> <code>srfi-28</code> <code>srfi-30</code> <code>srfi-34</code> <code>srfi-38</code> <code>srfi-39</code> <code>srfi-45</code> <code>srfi-46</code> <code>srfi-55</code> <code>srfi-87</code> <code>srfi-88</code> <code>srfi-98</code> <code>srfi-111</code> <code>srfi-112</code> <code>srfi-118</code> <code>srfi-138</code> <code>srfi-143</code> <code>srfi-145</code> <code>srfi-169</code> <code>srfi-176</code> <code>srfi-192</code> <code>srfi-193</code> <code>srfi-195</code> <code>srfi-208</code> <code>srfi-219</code> <code>srfi-261</code></p>
+ <code>srfi-0</code> <code>srfi-2</code> <code>srfi-6</code> <code>srfi-8</code> <code>srfi-9</code> <code>srfi-10</code> <code>srfi-11</code> <code>srfi-15</code> <code>srfi-16</code> <code>srfi-18</code> <code>srfi-23</code> <code>srfi-28</code> <code>srfi-30</code> <code>srfi-34</code> <code>srfi-38</code> <code>srfi-39</code> <code>srfi-45</code> <code>srfi-46</code> <code>srfi-55</code> <code>srfi-87</code> <code>srfi-88</code> <code>srfi-98</code> <code>srfi-111</code> <code>srfi-112</code> <code>srfi-118</code> <code>srfi-138</code> <code>srfi-143</code> <code>srfi-145</code> <code>srfi-169</code> <code>srfi-176</code> <code>srfi-192</code> <code>srfi-193</code> <code>srfi-195</code> <code>srfi-208</code> <code>srfi-219</code> <code>srfi-261</code> <code>srfi-267</code></p>
 </div>
 </div>
 <div class="sect3">
@@ -28568,6 +28602,10 @@ one can use one of the following forms:</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">string-regexps</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">srfi-264</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">raw-strings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">srfi-267</p></td>
 </tr>
 </tbody>
 </table>
@@ -32200,6 +32238,17 @@ is a list of triplets (code-number symbol message) where <code>symbol</code> and
 <div class="paragraph">
 <p><strong><a href="http://srfi.schemers.org/srfi-261/srfi-261.html">SRFI-261</a></strong> is fully supported. It defines some named feature for existing
 SRFIs. Most of the names used in this SRFI are reused in <strong><em>STklos</em></strong>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="doc_srfi_267raw_string_syntax">srfi-267&#8201;&#8212;&#8201;Raw String Syntax</h4>
+<div class="paragraph">
+<p>
+</p>
+</div>
+<div class="paragraph">
+<p><strong><a href="http://srfi.schemers.org/srfi-267/srfi-267.html">SRFI-267</a></strong> is fully supported. It defines a syntax for raw strings which are similar
+to standard <strong><em>STklos</em></strong> <strong>here strings</strong>.</p>
 </div>
 </div>
 </div>

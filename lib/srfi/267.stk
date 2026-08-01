@@ -84,6 +84,7 @@
 
     (define (raise-raw-string-read-error location msg)
       (signal-error &raw-string-read-error location msg))
+      
 
     (define (raise-raw-string-write-error location msg)
       (signal-error &raw-string-write-error location msg))
