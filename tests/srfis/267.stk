@@ -51,110 +51,95 @@
 ;;         (fail `(,name generate-delimiter failed ,delim ,expected))))
 ;; )
 
-(define (fail form) (write form) (newline) (exit 1))
-
 (define (test-srfi-267 name expected raw to-read the-delimiter bad-delimiter)
   ;; Did the reader read the string correctly?
-  (if (string=? expected raw)
-      #t
-      `(,name failed (string=? ,expected ,raw)))
-  ;; Does `read-raw-string` work?
+  (test name expected raw)
 
+  ;; Does `read-raw-string` work?
   (let* ((port (open-input-string to-read))
-         (as-read (read-raw-string port)))
-    (if (string=? expected as-read)
-        #t
-        `(,name read-raw-string failed (string=? ,expected ,as-read))))
+         (as-read (read-raw-string port))
+         (msg     (string-append name " (read-raw-string)")))
+    (test msg expected as-read))
 
   ;; Does `write-raw-string` with the same delimiter the reader read work?
   (let* ((port (open-output-string))
          (ignored (write-raw-string expected the-delimiter port))
-         (as-written (get-output-string port)))
-    (if (string=? as-written to-read)
-        #t
-        `(,name write-raw-string failed (string=? ,to-read ,as-written))))
+         (as-written (get-output-string port))
+         (msg (string-append name " (write-raw-string)")))
+    (test msg as-written to-read))
 
-  ;; Does `write-raw-string` fail for a known bad delimiter?
-  (if bad-delimiter
-    (if (can-delimit? expected bad-delimiter)
-        `(,name can-delimit? failed ,expected ,bad-delimiter)
-        (guard (x ((raw-string-write-error? x)   #t)
-                  (else                          `(,name write-raw-string bad failed)))
-          (write-raw-string expected bad-delimiter)
-          `(,name write-raw-string bad failed)))
-    #t)
+  ;;//  ;; Does `write-raw-string` fail for a known bad delimiter?
+  (when bad-delimiter
+    (let ((msg  (string-append name " (can-delimit?)")))
+      (test msg #f (can-delimit? expected bad-delimiter))
+      (test/error msg (write-raw-string expected bad-delimiter))))
 
   ;; Does `generate-delimiter` work properly?
-  (let* ((delim (generate-delimiter expected))
+  (let* ((delim       (generate-delimiter expected))
          (output-port (open-output-string))
-         (_ (write-raw-string expected delim output-port))
-         (input-port (open-input-string (get-output-string output-port))))
-    (if (equal? expected (read-raw-string input-port))
-        #t
-        `(,name generate-delimiter failed ,delim ,expected)))
-)
+         (_           (write-raw-string expected delim output-port))
+         (input-port  (open-input-string (get-output-string output-port)))
+         (msg         (string-append name " (generate-delimiter)")))
 
-(define-syntax test-srfi-267-wrapper
-  (syntax-rules ()
-    ((_ name expected raw to-read the-delimiter bad-delimiter)
-     (test name #t (test-srfi-267 name expected raw to-read the-delimiter bad-delimiter)))))
+    (test msg expected (read-raw-string input-port))))
 
-(test-srfi-267-wrapper "empty"
+
+(test-srfi-267 "empty"
        ""
        #""""
        #"-"#"""""-"
        ""
       #f)
 
-(test-srfi-267-wrapper "single character"
+(test-srfi-267 "single character"
       "a"
       #""a""
       #"-"#""a"""-"
       ""
       #f)
-(test-srfi-267-wrapper "no escapes"
+(test-srfi-267 "no escapes"
       "\\"
       #""\""
       #"-"#""\"""-"
       ""
       #f)
-(test-srfi-267-wrapper "Inserting double quote using custom delimiters"
+(test-srfi-267 "Inserting double quote using custom delimiters"
       "\""
       #"-"""-"
       #"--"#"-"""-""--"
       "-"
       "")
-(test-srfi-267-wrapper "Inserting double quote using space"
+(test-srfi-267 "Inserting double quote using space"
       " \" "
       #"" " ""
       #"-"#"" " """-"
       ""
       #f)
-(test-srfi-267-wrapper "Inserting backslash and double quote using custom delimiters"
+(test-srfi-267 "Inserting backslash and double quote using custom delimiters"
       "\\\""
       #"-"\""-"
       #"--"#"-"\""-""--"
       "-"
       "")
-(test-srfi-267-wrapper "Quoted string using custom delimiters"
+(test-srfi-267 "Quoted string using custom delimiters"
       "#\"()\""
       #"-"#"()""-"
       #"--"#"-"#"()""-""--"
       "-"
       "")
-(test-srfi-267-wrapper "Embedded raw string"
+(test-srfi-267 "Embedded raw string"
       "#\"\"a\"\""
       #"-"#""a"""-"
       #"--"#"-"#""a"""-""--"
       "-"
       "")
-(test-srfi-267-wrapper "ends with double quote"
+(test-srfi-267 "ends with double quote"
       "ends with \\\""
       #"-"ends with \""-"
       #"--"#"-"ends with \""-""--"
       "-"
       "")
-(test-srfi-267-wrapper "multiline string"
+(test-srfi-267 "multiline string"
       "multiline\nstring"
       #""multiline
 string""
@@ -162,7 +147,7 @@ string""
 string"""-"
       ""
       #f)
-(test-srfi-267-wrapper "no whitespace stripping"
+(test-srfi-267 "no whitespace stripping"
       "\n    no whitespace stripping"
       #""
     no whitespace stripping""
@@ -171,14 +156,14 @@ string"""-"
     ""
     #f)
 
-(test-srfi-267-wrapper "SRFI 264 example"
+(test-srfi-267 "SRFI 264 example"
       "\\(?(\\d{3})\\D{0,3}(\\d{3})\\D{0,3}(\\d{4})"
       #""\(?(\d{3})\D{0,3}(\d{3})\D{0,3}(\d{4})""
       #"-"#""\(?(\d{3})\D{0,3}(\d{3})\D{0,3}(\d{4})"""-"
       ""
       #f)
 
-(test-srfi-267-wrapper "wisp example"
+(test-srfi-267 "wisp example"
       "\ndefine: hello-name name\n  string-append \"Hello,\" name \"!\"\n"
       #"wisp-EOS"
 define: hello-name name
@@ -191,7 +176,7 @@ define: hello-name name
       "wisp-EOS"
       #f)
 
-(test-srfi-267-wrapper "parse-url example"
+(test-srfi-267 "parse-url example"
       "Given a URL as a string, returns a Parsed-URL record with the\ncomponents of that URL.\n\n(parse-url \"https://example.org/~smith/?record\")\n=> #<Parsed-URL protocol: \"https\" domain: \"example.org\"\n                path: \"/~smith/\" query: \"?record\">"
       #""Given a URL as a string, returns a Parsed-URL record with the
 components of that URL.
@@ -209,13 +194,13 @@ components of that URL.
        #f)
 
 
-;; ;;;; Test that read fails on EOF
+;;;; Test that read fails on EOF
 (test "read fails on EOF in delimiter"
       #t
       (guard (x ((raw-string-read-error? x)
                  #t)
                  (else (fail `("read fails on EOF in delimiter" failed))))
-        (read-raw-string (open-input-string #"-"#"ab"-"))))
+         (read-raw-string (open-input-string #"-"#"ab"-"))))
 
 (test "read fails on EOF in string"
       #t
