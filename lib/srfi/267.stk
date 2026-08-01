@@ -54,19 +54,42 @@
           (scheme inexact)
           (scheme case-lambda)
           (srfi 117)
-          (srfi 217))
+          (srfi 217)
+
+          ;; Use STklos conditions for a better integration
+          (srfi 35)
+          (only SCHEME signal-error &error-message format))
+
   (export raw-string-read-error? raw-string-write-error?
           read-raw-string
           read-raw-string-after-prefix
           write-raw-string can-delimit?
           generate-delimiter)
   (begin
-    (define-record-type <raw-string-read-error>
-      (raw-string-read-error)
-      raw-string-read-error?)
-    (define-record-type <raw-string-write-error>
-      (raw-string-write-error)
-      raw-string-write-error?)
+    ;; Use condition instead of record for a better integration in STklos
+    ;;(define-record-type <raw-string-read-error>
+    ;;  (raw-string-read-error)
+    ;;  raw-string-read-error?)
+    ;;
+    ;; (define-record-type <raw-string-write-error>
+    ;;   (raw-string-write-error)
+    ;;   raw-string-write-error?)
+
+    (define-condition-type &raw-string-read-error
+                           &error-message
+                           raw-string-read-error?)
+    (define-condition-type &raw-string-write-error
+                           &error-message
+                           raw-string-write-error?)
+
+    (define (raise-raw-string-read-error location msg)
+      (signal-error &raw-string-read-error location msg))
+
+    (define (raise-raw-string-write-error location msg)
+      (signal-error &raw-string-write-error location msg))
+
+
+    ;; ----------------------------------------------------------------------
     (define read-raw-string-after-prefix
       (case-lambda
         (() (read-raw-string-after-prefix (current-input-port)))
@@ -74,7 +97,8 @@
          (define (read-char* location)
            (let ((ch (read-char port)))
              (if (eof-object? ch)
-                 (raise (raw-string-read-error))
+                 (raise-raw-string-read-error 'read-raw-string-after-prefix
+                                              "EOF while reading a raw string")
                  ch)))
          (define delimiter
            (do ((ch (read-char* 'delim) (read-char* 'delim))
@@ -83,6 +107,7 @@
                 (reverse (cons #\" acc)))))
          (call-with-port (open-output-string)
            (lambda (out)
+             :read-raw-string-after-prefix
              (define (read-delimiter n rest-of-delimiter)
                (if (null? rest-of-delimiter)
                    (get-output-string out)
@@ -104,10 +129,10 @@
         (() (read-raw-string (current-input-port)))
         ((port)
          (unless (eqv? (peek-char port) #\#)
-           (raise (raw-string-read-error)))
+           (raise-raw-string-read-error 'read-raw-string "character #\# expected"))
          (read-char port)
          (unless (eqv? (peek-char port) #\")
-           (raise (raw-string-read-error)))
+           (raise-raw-string-read-error 'read-raw-string "character #\" expected"))
          (read-char port)
          (read-raw-string-after-prefix port))))
     (define (can-delimit? string delimiter)
@@ -128,7 +153,9 @@
                                               (current-output-port)))
         ((string delimiter port)
          (unless (can-delimit? string delimiter)
-           (raise (raw-string-write-error)))
+           (raise-raw-string-write-error 'write-raw-string
+                                         (format "bad delimiter delimiter ~s"
+                                                 delimiter)))
          (write-string "#\"" port)
          (write-string delimiter port)
          (write-string "\"" port)

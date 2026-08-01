@@ -372,7 +372,7 @@ SUFFIXES = .stk .ostk .stk -incl.c .$(SO) .c
 234.ostk: 1.ostk 11.ostk 26.ostk
 235.ostk: 1.ostk
 260.ostk: 27.$(SO)
-267.ostk: 117.ostk 217.ostk
+267.ostk: 35.ostk 117.ostk 217.ostk
 
 
 25-incl.c:    25.stk
