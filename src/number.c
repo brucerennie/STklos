@@ -2769,7 +2769,7 @@ DEFINE_PRIMITIVE("abs", abs, subr1, (SCM x))
                           x = exact2inexact(x);
                         return x;
                       }
-    default:          error_not_a_real_number(x);
+    default:          error_bad_number(x);
   }
   return STk_void;      /* never reached */
 }
