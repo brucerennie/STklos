@@ -3007,4 +3007,15 @@ doc>
 doc>
 |#
 
+;; ----------------------------------------------------------------------
+;;  SRFI-267: "Raw String Syntax"
+;; ----------------------------------------------------------------------
+
+;; Add a new syntax reader for raw strings
+(%add-sharp-reader #\"
+                   (lambda (port)
+                     ;; We are sure that current character is the opening #\"
+                     (read-char port)  ;; skip it 
+                     (read-raw-string-after-prefix port)))
+
 ;; LocalWords:  doc dotimes R5RS str SRFI optarg

@@ -871,6 +871,7 @@ static SCM read_srfi207_bytevector(SCM port, int constant)
   return z;
 }
 
+
 static SCM read_vector(SCM port, struct read_context *ctx)
 {
   SCM v = STk_list2vector(read_list(port, ')', ctx));
@@ -915,7 +916,7 @@ static SCM read_sharp(SCM port, struct read_context *ctx, int inlist)
 
     case '(' : return read_vector(port, ctx);
 
-   case '!' : {
+    case '!' : {
       SCM word;
 
       // Force case insensitive for reading #!xxx
