@@ -2131,6 +2131,35 @@
 
 
 ;; sin, asin; cos, acos
+(test "asin +inf"
+      #t
+      (let ((x (asin +inf.0)))
+        (and (< 1.57079632670 (real-part x) 1.57079632680)
+             (negative? (imag-part x))
+             (infinite? (imag-part x)))))
+
+(test "asin -inf"
+      #t
+      (let ((x (asin -inf.0)))
+        (and (> -1.57079632670 (real-part x) -1.57079632680)
+             (positive? (imag-part x))
+             (infinite? (imag-part x)))))
+
+
+(test "acos +inf"
+      #t
+      (let ((x (acos +inf.0)))
+        (and (zero? (real-part x))
+             (positive? (imag-part x))
+             (infinite? (imag-part x)))))
+
+(test "acos -inf"
+      #t
+      (let ((x (acos -inf.0)))
+        (and (< 3.1415926535 (real-part x) 3.1415926536)
+             (negative? (imag-part x))
+             (infinite? (imag-part x)))))
+
 (test "sin-asin 1"
       1.0
       (sin (asin 1)))
