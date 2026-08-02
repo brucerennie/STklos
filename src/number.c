@@ -1314,7 +1314,7 @@ static SCM read_integer_or_real(char *str, long base, char exact_flag, char **en
   char saved_char = '\0', *original_str = str;
   char *p, *p1, *p2, *p3, *p4;
   SCM res;
-  
+
   if ((*str == '-' || *str == '+') && isalpha(str[1])) {
     SCM n = STk_false;
     /* Treat special inf "+inf.0" -inf.0 , "+nan.0", "-nan.0"
@@ -2733,7 +2733,41 @@ DEFINE_PRIMITIVE("abs", abs, subr1, (SCM x))
     case tc_complex:  {
                         SCM r = COMPLEX_REAL(x);
                         SCM i = COMPLEX_IMAG(x);
-                        return STk_sqrt(add2(mul2(r, r), mul2(i, i)));
+                        int inexact = 0;
+                        /* Compute the sum of squares that would be
+                           inside the square root, but before
+                           answering check if it's infinite, because
+                           we could have an overflow: r and i could be
+                           large doubles, that won't fit a double
+                           after squaring and summing.
+                        */
+                        SCM x = add2(mul2(r, r), mul2(i, i));
+                        if (REALP(x) && isinf(REAL_VAL(x))) { /* got inf! */
+                            /* Now, if either r or i are real & inf,
+                               we're fine, the result should actually
+                               be infinite.
+
+                               If not, then we have an overflow, so we
+                               redo the computation changing doubles
+                               to bignums. */
+                            if (! ( (REALP(r) && isinf(REAL_VAL(r))) ||
+                                    (REALP(i) && isinf(REAL_VAL(i))))) {
+                              /* One of them could be a bignum or rational... */
+                              if (REALP(r)) {
+                                r = double2integer(REAL_VAL(r));
+                                inexact = 1;
+                              }
+                              if (REALP(i)) {
+                                i = double2integer(REAL_VAL(i));
+                                inexact = 1;
+                              }
+                              x = add2(mul2(r, r), mul2(i, i));
+                            }
+                        }
+                        x = STk_sqrt(x);
+                        if (inexact && isexactp(x))
+                          x = exact2inexact(x);
+                        return x;
                       }
     default:          error_not_a_real_number(x);
   }
@@ -3494,9 +3528,14 @@ static SCM asin_complex(SCM z)
 
 static SCM asin_real(double d)
 {
+  if (isinf(d)) {
+    int s = signbit(d) ? -1 : +1;
+    return Cmake_complex(double2real(s * (MY_PI / 2.0L)), double2real(s * minus_inf));
+  }
   if (d < -1)
     return sub2(MAKE_INT(0), asin_real(-d));
   if (d > 1)
+    /* - i  log ( d i + SQRT(1 - d^2) )  */
     return mul2(Cmake_complex(MAKE_INT(0), MAKE_INT(-1UL)),
                 my_log(add2(mul2(Cmake_complex(MAKE_INT(0), MAKE_INT(1UL)),
                                  double2real(d)),
@@ -3543,6 +3582,12 @@ static inline SCM acos_complex(SCM z)
 
 static SCM acos_real(double d)
 {
+  if (isinf(d)) {
+    if(signbit(d)) {
+      return Cmake_complex(double2real(MY_PI), double2real(minus_inf));
+    } else
+      return Cmake_complex(MAKE_INT(0), double2real(plus_inf));
+  }
   return (-1 <= d && d <= 1) ? double2real(acos(d)) : acos_complex(double2real(d));
 }
 
