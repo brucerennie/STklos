@@ -112,7 +112,7 @@
 ;;;   it was loaded.
 
 (define-module srfi/152
-  (import (only STklos
+  (import (only SCHEME
                 ;; STklos primitives that we'll use:
                 string-copy!
                 string-fill!
@@ -144,7 +144,7 @@
                 make-string
                 string?
                 ))
-  (import (rename STklos
+  (import (rename SCHEME
                   (string=?     stklos:string=?)
                   (string-ci>=? stklos:string-ci>=?)
                   (string-ci<=? stklos:string-ci<=?)
