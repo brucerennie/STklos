@@ -228,6 +228,8 @@
 )
 
 
+(import (only SCHEME string-titlecase)) ;; which was broken before
+
 (test "gambit.76" "Knock Knock" (string-titlecase "kNock KNoCK"))
 #;(test "gambit.77" "Who's There?"                      ;; not clear
       (string-titlecase "who's there?") equal?)
@@ -364,6 +366,41 @@
         fail))
 
 ;; ----------------------------------------------------------------------
+;;
+
+(test "string-titlecase.1" "Un Été 42." (string-titlecase "un été 42."))
+(let ((str "abc DEF gHI.abc"))
+  (test "string-titlecase.2" "Abc Def Ghi.Abc"
+        (string-titlecase str))
+  (test "string-titlecase.3" "Abc Def Ghi.Abc"
+        (string-titlecase (string-upcase str)))
+  (test "string-titlecase.4" "Abc Def Ghi.Abc"
+        (string-titlecase (string-downcase str))))
+
+(test "string-titlecase.5" "Abc123Def" (string-titlecase "abc123def"))
+(test "string-titlecase.6" "Abc 123Def" (string-titlecase "abc 123def"))
+
+
+(let ((str "abcde fghi jklmno pqrstu vwxyz"))
+  (test "string-titlecase.7"
+        "Hi Jklmno Pqrstu Vwxyz"
+        (string-titlecase str 8))
+  (test "string-titlecase.8"
+        "Hi Jklmn"
+        (string-titlecase str 8 16))
+  (test/error "string-titlecase.9"
+              (string-titlecase! str)))
+
+(let ((str (string-copy "abcde fghi jklmno pqrstu vwxyz")))
+  (test "string-titlecase.7"
+        "abcde fgHi Jklmno Pqrstu Vwxyz"
+        (string-titlecase! str 8))
+  (test "string-titlecase.8"
+        "abcde fgHi Jklmno Pqrstu Vwxyz"
+        (string-titlecase! str 8 16)))
+
+
+;; ----------------------------------------------------------------------
 ;; Tests after re-implementing the UTF8 tables
 
 
@@ -372,18 +409,18 @@
 ;; alphabetic, all other Schemes seems to differenciate them
 ;; R7Rs seems to restrict numerics to "Nd" category only.
 ;; Moreover, we'll have problem with (digit-value #\Ⅻ) since
-;; it should return 12 (Note: chez does not have
+;; it should return 12 (Note: chez does not have digit-value)
 
 (test "Roman numeral.1"
       '(#t #f #f)
-      (let ((x #\x2167)) ;; Roman 8 #\Ⅷ 
+      (let ((x #\x2167)) ;; Roman 8 #\Ⅷ
         (list (char-alphabetic? x)
               (char-numeric? x)
               (digit-value x))))
 
 (test "Fraction.1"
         '(#f #f #f)
-        (let ((x #\x2154)) ;; Two third  #\⅔) 
+        (let ((x #\x2154)) ;; Two third  #\⅔)
           (list (char-alphabetic? x)
                 (char-numeric? x)
                 (digit-value x))))
