@@ -1,7 +1,7 @@
 ;;;;
 ;;;; str.stk    -- string operations
 ;;;;
-;;;; Copyright © 2011-2022 Erick Gallesio - Polytech'Nice-Sophia <eg@unice.fr>
+;;;; Copyright © 2011-2026 Erick Gallesio <eg@stklos.net>
 ;;;;
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -30,8 +30,6 @@
 (when (%use-utf8?)
   (let ((%string-split          string-split)
         (%string-blit!          string-blit!)
-        (%string-titlecase      string-titlecase)
-        (%string-titlecase!     string-titlecase!)
         (error-bad-string       (lambda (str)
                                   (error "bad string ~S" str))))
     ;;
@@ -114,68 +112,6 @@
                          (else
                           (Loop (+ i 1) j))))))))))))
 
-    ;;
-    ;; string-titlecase
-    ;;
-    (set! string-titlecase
-      (lambda (str :optional (start 0) (end -1))
-        (if (not (%string-use-utf8? str))
-            (%string-titlecase str start end)
-            (begin
-              (unless (string? str)
-                (error-bad-string  str))
-              (unless (integer? start)
-                (error "bad starting index ~S" start))
-              (cond
-                ((not (integer? end))
-                 (error "bad ending index ~S" end))
-                ((= end -1)
-                 (set! end (string-length str))))
 
-              (let ((new (make-string (- end start))))
-                (let Loop ((i start)
-                           (j 0)
-                           (prev-is-sep? #t))
-                  (if (= i end)
-                      new
-                      (let* ((curr (string-ref str i))
-                             (curr-is-sep? (not (char-alphabetic? curr))))
-                        (string-set! new j (cond
-                                             (curr-is-sep?  curr)
-                                             (prev-is-sep?  (char-upcase curr))
-                                             (else          (char-downcase curr))))
-                        (Loop (+ i 1) (+ j 1) curr-is-sep?)))))))))
-
-
-
-    ;;
-    ;; string-titlecase!
-    ;;
-    (set! string-titlecase!
-      (lambda (str :optional (start 0) (end -1))
-        (if (not (%string-use-utf8? str))
-            (%string-titlecase! str start end)
-            (begin
-              (unless (string? str)
-                (error-bad-string str))
-              (unless (integer? start)
-                (error "bad starting index ~S" start))
-              (cond
-                ((not (integer? end))
-                 (error "bad ending index ~S" end))
-                ((= end -1)
-                 (set! end (string-length str))))
-
-              (let Loop ((i start)
-                         (prev-is-sep? #t))
-                (if (= i end)
-                    (void)
-                    (let* ((curr (string-ref str i))
-                           (curr-is-sep? (not (char-alphabetic? curr))))
-                      (string-set! str i (cond
-                                           (curr-is-sep?  curr)
-                                           (prev-is-sep?  (char-upcase curr))
-                                           (else          (char-downcase curr))))
-                      (Loop (+ i 1) curr-is-sep?))))))))
     ))
 

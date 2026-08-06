@@ -1425,20 +1425,37 @@ DEFINE_PRIMITIVE("string-titlecase", string_titlecase, vsubr, (int argc, SCM *ar
 {
   SCM s, z;
   long start, end;
-  char *endp, *p, *q;
   char prev_is_sep = 1, curr_is_sep;
 
-  s    = control_index(argc, argv, &start, &end);
-  endp = STRING_CHARS(s) + end;
-  z    = STk_makestring(end-start, NULL);
+  s  = control_index(argc, argv, &start, &end);
+  z  = STk_makestring(end-start, NULL);
 
-  for (p=STRING_CHARS(s)+start, q=STRING_CHARS(z); p < endp; p++, q++) {
-    curr_is_sep = !(isalpha(*p));
-    if (curr_is_sep)
-      *q = *p;
-    else
-      *q = (prev_is_sep) ? toupper(*p) : tolower(*p);
-    prev_is_sep = curr_is_sep;
+  if (STk_use_utf8 && STRING_MONOBYTE(s)) {
+    // Fast path for non UTF-8 string
+    char *endp =  STRING_CHARS(s) + end;
+
+    for (char *p=STRING_CHARS(s)+start, *q=STRING_CHARS(z); p < endp; p++, q++) {
+
+      curr_is_sep = !(isalpha(*p));
+      if (curr_is_sep)
+        *q = *p;
+      else
+        *q = (prev_is_sep) ? toupper(*p) : tolower(*p);
+      prev_is_sep = curr_is_sep;
+    }
+  } else {
+    // UTF-8 version
+    for (int i=start, j=0; i < end; i++,j++) {
+      SCM ch, curr = STk_string_ref(s, MAKE_INT(i));
+      curr_is_sep = STk_char_isalpha(curr) == STk_false;
+
+      if (curr_is_sep)      ch = curr;
+      else if (prev_is_sep) ch = MAKE_CHARACTER(STk_to_upper(CHARACTER_VAL(curr)));
+      else                  ch = MAKE_CHARACTER(STk_to_lower(CHARACTER_VAL(curr)));
+
+      STk_string_set(z, MAKE_INT(j), ch);
+      prev_is_sep = curr_is_sep;
+    }
   }
   return z;
 }
@@ -1453,23 +1470,40 @@ DEFINE_PRIMITIVE("string-titlecase", string_titlecase, vsubr, (int argc, SCM *ar
 doc>
 */
 DEFINE_PRIMITIVE("string-titlecase!", string_dtitlecase,vsubr,(int argc, SCM *argv))
-{
+{           // non UTF-8 version (see lib/str.stk for UTF-9 version
   SCM s;
   long start, end;
-  char *endp, *p;
   char prev_is_sep = 1, curr_is_sep;
 
   s    = control_index(argc, argv, &start, &end);
-  endp = STRING_CHARS(s) + end;
 
   if (BOXED_INFO(s) & STRING_CONST) error_change_const_string(s);
 
-  for (p=STRING_CHARS(s)+start; p < endp; p++) {
-    curr_is_sep = !(isalpha(*p));
-    if (!curr_is_sep)
-      *p = (prev_is_sep) ? toupper(*p) : tolower(*p);
-    prev_is_sep = curr_is_sep;
+  if (STk_use_utf8 && STRING_MONOBYTE(s)) {
+    // Fast path for non UTF-8 string
+    char *endp = STRING_CHARS(s) + end;
+
+    for (char *p=STRING_CHARS(s)+start; p < endp; p++) {
+      curr_is_sep = !(isalpha(*p));
+      if (!curr_is_sep)
+        *p = (prev_is_sep) ? toupper(*p) : tolower(*p);
+      prev_is_sep = curr_is_sep;
+    }
+  } else {
+    // UTF-8 version
+    for (int i=start, j=0; i < end; i++,j++) {
+      SCM ch, curr = STk_string_ref(s, MAKE_INT(i));
+      curr_is_sep = STk_char_isalpha(curr) == STk_false;
+
+      if (curr_is_sep)      ch = curr;
+      else if (prev_is_sep) ch = MAKE_CHARACTER(STk_to_upper(CHARACTER_VAL(curr)));
+      else                  ch = MAKE_CHARACTER(STk_to_lower(CHARACTER_VAL(curr)));
+
+      STk_string_set(s, MAKE_INT(j), ch);
+      prev_is_sep = curr_is_sep;
+    }
   }
+
   return s;
 }
 
