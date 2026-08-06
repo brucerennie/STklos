@@ -427,6 +427,8 @@ int STk_init_box(void);
 #define CHARACTER_VAL(n)  ((AS_LONG(n) >> 3))
 #define CHARACTERP(n)     ((AS_LONG(n) & 7) == 6)
 
+EXTERN_PRIMITIVE("char-alphabetic?", char_isalpha, subr1, (SCM c));
+
 typedef uint32_t utf8_char;
 
 /* Simple  character conversion functions */

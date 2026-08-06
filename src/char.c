@@ -497,7 +497,8 @@ CHAR_COMPARE("char-ci>=?", chargei, (charcompi(last,*argv) < 0))
  * and carriage return.
 doc>
 */
-DEFINE_PRIMITIVE("char-alphabetic?", char_isalpha, subr1, (SCM c)) {
+DEFINE_PRIMITIVE("char-alphabetic?", char_isalpha, subr1, (SCM c))
+{
   if (!CHARACTERP(c)) error_bad_char(c);
   if (STk_use_utf8) {
     int idx = search_character(CHARACTER_VAL(c));
