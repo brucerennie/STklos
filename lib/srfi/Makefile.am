@@ -161,7 +161,8 @@ SRC_STK   = 0.stk   \
             260.stk \
             261.stk \
             264.stk \
-            267.stk
+            267.stk \
+            273.stk
 
 SRC_OSTK =  0.ostk   \
             1.ostk   \
