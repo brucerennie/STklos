@@ -122,6 +122,15 @@
 (test "chibi.20" "i̇" (string-foldcase "İ"))
 (test "chibi.21" "J̌" (string-upcase "ǰ"))
 
+(let ((in (open-input-string (string #\x10F700 #\x10F701 #\x10F702))))
+  (let* ((c0 (peek-char in))
+         (c1 (read-char in))
+         (c2 (read-char in))
+         (c3 (read-char in)))
+    (test "chibi.22" #\x10F700 c0)
+    (test "chibi.23" #\x10F700 c1)
+    (test "chibi.24" #\x10F701 c2)
+    (test "chibi.25" #\x10F702 c3)))
 
 ;; Following tests come from
 ;;http://www.smyles.com/projects/r6gambit/darcs/test/r6rs/unicode.sls
