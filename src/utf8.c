@@ -1,7 +1,7 @@
 /*
  * utf8.c               -- UTF-8 support functions
  *
- * Copyright © 2011-2023 Erick Gallesio <eg@stklos.net>
+ * Copyright © 2011-2026 Erick Gallesio <eg@stklos.net>
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -90,10 +90,10 @@ int STk_utf8_read_char(SCM port)
       c += (STk_getc(port) & 0x3f) << 6;
       c += (STk_getc(port) & 0x3f);
     } else {
-      c  = (c & 0x0F) << 16;
+      c  = (c & 0x07) << 18;
+      c += (STk_getc(port) &0x3f) << 12;
       c += (STk_getc(port) &0x3f) << 6;
-      c += (STk_getc(port) &0x3f) << 6;
-      c += (STk_getc(port) &0x3F);
+      c += (STk_getc(port) &0x3f);
     }
   }
   return c;
@@ -222,16 +222,16 @@ int STk_utf8_char_from_byte(char *s, int i, int max) /*  byte index => char inde
  * ====================================================================== */
 DEFINE_PRIMITIVE("%char-utf8-encoding", char_utf8_encoding, subr1, (SCM c))
 {
-  SCM lst = STk_nil;
-  char buffer[5] = {0};
-  int i;
+  unsigned char buffer[5] = {0};
+  char result[100];
 
   if (!CHARACTERP(c)) STk_error("bad char ~S", c);
-  STk_char2utf8(CHARACTER_VAL(c), buffer);
+  STk_char2utf8(CHARACTER_VAL(c), (char *) buffer);
 
-  for (i = strlen((char*) buffer)-1; i >= 0; i--)
-    lst = STk_cons(MAKE_INT(buffer[i]), lst);
-  return lst;
+  sprintf(result,  "{%x, %x, %x, %x, %x}",
+          buffer[0], buffer[1], buffer[2], buffer[3], buffer[4]);
+  STk_debug("==> %s", result);
+  return STk_void;
 }
 
 DEFINE_PRIMITIVE("%dump-string", dump_string, subr12, (SCM str, SCM index))
