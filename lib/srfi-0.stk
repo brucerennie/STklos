@@ -179,10 +179,14 @@ doc>
           (let* ((name (caar clauses))
                  (data (assoc name %srfi-feature-list)))
             (if data
+                ;; FEATURE is a SRFI name, import it
                 (begin
                   (%import-library `(srfi ,name))
                   `(begin ,@(cdar clauses)))
-                `(cond-expand ,@(cdr clauses))))))))))
+                ;; See if name is a present in (features).
+                (if (memq name (features))
+                    `(begin ,@(cdar clauses))                ;; Yes: execute code
+                    `(cond-expand ,@(cdr clauses)))))))))))  ;; No: try next clause
 
 ;; ----------------------------------------------------------------------
 ;;      cond-expand ...
