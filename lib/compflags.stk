@@ -2,7 +2,7 @@
 ;;;;
 ;;;; compflags.stk         -- Compiler Flags
 ;;;;
-;;;; Copyright © 2023-2024 Erick Gallesio <eg@stklos.net>
+;;;; Copyright © 2023-2026 Erick Gallesio <eg@stklos.net>
 ;;;;
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -226,10 +226,10 @@ doc>
  * (compiler:verify-assume bool)
  *
  * This parameter is used by the |assume| form ({{quick-link-srfi 145}}).
- * If its value is `#t`, assumptions are not verified at all (their code is
+ * If its value is `#f`, assumptions are not verified at all (their code is
  * not compiled). Otherwise, assumptions are verified.
  *
- * NOTE: When {{stklos}} is in debug modethe debug mode, this parameter is
+ * NOTE: When {{stklos}} is in debug mode, this parameter is
  * forced to `#t`.
 doc>
 |#
