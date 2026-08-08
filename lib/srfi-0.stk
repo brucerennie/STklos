@@ -95,28 +95,11 @@ doc>
         (%import-library (list 'srfi (cdr info)))
         (error "feature ~S is not supported" feat))))
 
-
-;; ----------------------------------------------------------------------
-(define (%load-implementation files)
-  (for-each* (lambda (x)
-               ;; Use require macro here and not the function
-               (require x))
-             files))
-
-(define (%find-feature x)
-  (let Loop ((l *all-features*))
-    (if (null? l)
-        #f                          ;; not found
-        (let ((current (car l)))
-          (if (pair? current)
-              ;; Clause is (FEATURE . file) or (FEATURE file1 file2 ...)
-              (if (eq? (car current) x)
-                  (cdr current)
-                  (Loop (cdr l)))
-              ;; Clause is FEATURE
-              (or (eq? current x)
-                  (Loop (cdr l))))))))
-
+(define (%library-exists? libname)
+  (let ((name (%normalize-library-name libname)))
+    (with-handler (lambda (_) #f)
+                  (require (symbol->string name))
+                  #t)))
 
 ;; ----------------------------------------------------------------------
 (define (%srfi-0-expand  clauses)
@@ -167,7 +150,7 @@ doc>
                        (not (null? (cddr test))))
                    (error 'cond-expand "invalid 'library' clause")
                    (let ((name (cadr test)))
-                     (if (find-module name #f)
+                     (if (%library-exists? name)
                          `(begin ,@(cdar clauses))
                          `(cond-expand ,@(cdr clauses))))))
 
@@ -179,10 +162,14 @@ doc>
           (let* ((name (caar clauses))
                  (data (assoc name %srfi-feature-list)))
             (if data
+                ;; FEATURE is a SRFI name, import it
                 (begin
                   (%import-library `(srfi ,name))
                   `(begin ,@(cdar clauses)))
-                `(cond-expand ,@(cdr clauses))))))))))
+                ;; See if name is a present in (features).
+                (if (memq name (features))
+                    `(begin ,@(cdar clauses))                ;; Yes: execute code
+                    `(cond-expand ,@(cdr clauses)))))))))))  ;; No: try next clause
 
 ;; ----------------------------------------------------------------------
 ;;      cond-expand ...

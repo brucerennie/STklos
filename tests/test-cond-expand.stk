@@ -542,7 +542,52 @@
 ;; to re-import SCHEME to get back all the standard bindings
 (import SCHEME)
 
-
 (test "cond-expand srfi-list" #t (list? srfis))
+
+;; ----------------------------------------------------------------------
+(test "cond-expand existing srfi.1" #t
+      (cond-expand (srfi-1 #t) (else #f)))
+(test "cond-expand existing srfi.2" #t
+      (cond-expand (lists #t) (else #f)))
+
+(test "cond-expand non existing srfi" #f
+      (cond-expand (srfi-3 #t) (else #f)))   ;; withdrawn SRFI
+
+(test "cond-expand existing feature" #t
+      (cond-expand (stklos #t) (else #f)))
+(test "cond-expand non existing feature" #f
+      (cond-expand (foobar #t) (else #f)))
+(test "cond-expand string feature" #f
+      (cond-expand ("foobar" #t) (else #f)))
+
+(test "cond-expand AND.1" #t
+      (cond-expand ((and stklos r7rs) #t) (else #f)))
+(test "cond-expand AND.2" #f
+      (cond-expand ((and stklos r7rs foo) #t) (else #f)))
+
+(test "cond-expand OR.1" #f
+      (cond-expand ((or foo bar) #t) (else #f)))
+(test "cond-expand OR.2" #t
+      (cond-expand ((or foo bar stklos) #t) (else #f)))
+
+(test "cond-expand NOT.1" #t
+      (cond-expand ((not foo) #t) (else #f)))
+(test "cond-expand NOT.2" #f
+      (cond-expand ((not stklos) #t) (else #f)))
+
+
+(test "cond-expand LIBRARY.1" #t
+      (cond-expand ((library (scheme base)) #t) (else #f)))
+(test "cond-expand LIBRARY.2" #f
+      (cond-expand ((library (scheme absent)) #t) (else #f)))
+(test "cond-expand LIBRARY.3" #t
+      (cond-expand ((library (srfi 1)) #t) (else #f)))
+(test "cond-expand LIBRARY.4" #t
+      (cond-expand ((library (srfi lists)) #t) (else #f)))
+
+
+
+
+
 (test-section-end)
 
