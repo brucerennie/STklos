@@ -225,7 +225,7 @@ static int vport_puts(const char *s, void *stream)
 
 /*
 <doc EXT open-input-virtual
- * (open-input-virtual :key  (read-char #f) (ready? #f) (eof? #f) (close #f))
+ * (open-input-virtual :key (read-char #f) (ready? #f) (eof? #f) (close #f))
  *
  * Returns a virtual port using the |read-char| procedure to read a
  * character from the port, |ready?| to know if there is any data to
@@ -276,7 +276,7 @@ DEFINE_PRIMITIVE("%open-input-virtual", open_input_vport, subr1, (SCM v))
   vs->putc = vs->putstring = vs->flush = NULL;
 
   PORT_STREAM(z)        = vs;
-  PORT_FLAGS(z)         = PORT_READ | PORT_IS_VIRTUAL | PORT_TEXTUAL | flag;
+  PORT_FLAGS(z)         = PORT_READ|PORT_IS_VIRTUAL|PORT_TEXTUAL|PORT_BINARY | flag;
   PORT_UNGETC(z)        = EOF;
   PORT_LINE(z)          = 1;
   PORT_POS(z)           = 0;
